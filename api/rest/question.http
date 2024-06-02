@@ -1,0 +1,48 @@
+### Get all questions ###
+GET http://localhost:3000/questions
+
+### Create a new question ###
+POST http://localhost:3000/questions
+Content-Type: application/json
+
+{
+  "question": "What is the capital of France?",
+  "subquestions": [
+    {
+      "pictures": true,
+      "content": "Subquestion 1"
+    }
+  ],
+  "answer": [
+    {
+      "pictures": false,
+      "content": "Paris"
+    }
+  ],
+  "questionAnswerDependence": [1, 2],
+  "suiTable": false
+}
+
+### Update a question ###
+PUT http://localhost:3000/questions/<questionId>
+Content-Type: application/json
+
+{
+  "question": "What is the capital of Spain?"
+}
+
+### Delete a question ###
+DELETE http://localhost:3000/questions/<questionId>
+
+### Patch a question ###
+PATCH http://localhost:3000/questions/<questionId>
+Content-Type: application/json
+
+{
+  "subquestions": [
+    {
+      "pictures": false,
+      "content": "Updated Subquestion 1"
+    }
+  ]
+}

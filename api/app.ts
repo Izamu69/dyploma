@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import helmet from "helmet";
 import userRoutes from "./routes/userRoute";
+import questionRoutes from "./routes/questionRoute";
+import testRoutes from "./routes/testController";
 
 const app = express();
 app.use(helmet());
@@ -22,6 +24,8 @@ const allowCrossOrigin = (req: Request, res: Response, next: NextFunction) => {
 app.use(express.json());
 app.use(allowCrossOrigin);
 app.use(userRoutes);
+app.use(questionRoutes);
+app.use(testRoutes);
 
 const url: string = `mongodb://mongodb:27017/users`;
 mongoose
