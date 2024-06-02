@@ -1,10 +1,14 @@
+// src/SignUpForm.jsx
 import React, { useState } from 'react';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    userName: '',
+    firstName: '',
+    lastName: '',
     password: '',
     confirmPassword: '',
+    phone: '',
   });
 
   const [error, setError] = useState('');
@@ -33,11 +37,11 @@ const SignUpForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userName: formData.email.split('@')[0], // Assuming userName is derived from email
-          firstName: 'stas',
-          lastName: 'stas',
+          userName: formData.userName,
+          firstName: formData.firstName || ' ', // Allow empty first name
+          lastName: formData.lastName || ' ', // Allow empty last name
           password: formData.password,
-          phone: '213234', // Add a phone input if required
+          phone: formData.phone,
         }),
       });
 
@@ -65,14 +69,14 @@ const SignUpForm = () => {
         {success && <p className="text-green-500 text-sm">{success}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="email">
-              Email address
+            <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="userName">
+              Username
             </label>
             <input
               className="w-full px-3 py-2 text-gray-300 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:shadow-outline"
-              id="email"
-              type="email"
-              value={formData.email}
+              id="userName"
+              type="text"
+              value={formData.userName}
               onChange={handleChange}
               required
             />
@@ -90,7 +94,7 @@ const SignUpForm = () => {
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="confirmPassword">
               Confirm Password
             </label>
@@ -99,6 +103,19 @@ const SignUpForm = () => {
               id="confirmPassword"
               type="password"
               value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="phone">
+              Phone
+            </label>
+            <input
+              className="w-full px-3 py-2 text-gray-300 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:shadow-outline"
+              id="phone"
+              type="text"
+              value={formData.phone}
               onChange={handleChange}
               required
             />
