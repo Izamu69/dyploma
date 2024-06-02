@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: #d1d5db !important; /* text-gray-300 */
+}
+
+/* Autofill background color in dark mode */
+input:-webkit-autofill {
+  background-color: #374151 !important; /* bg-gray-700 */
+  caret-color: white;
+}
+
+body {
+  @apply bg-gray-900 text-gray-400;
+  margin: 0;
+  padding: 0; 
+  overflow: hidden;
+}

@@ -11,7 +11,7 @@ services:
     restart: on-failure
     build: .
     volumes:
-      - ./src:/app/src
+      - ./api:/app/src
       - ./dist/js:/app/dist/js
     ports:
       - "3000:3000"
