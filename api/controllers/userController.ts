@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IUser } from "../types/userType";
+import { IUser } from "../models/user";
 import User from "../models/user";
 
 const getUsers = async (req: Request, res: Response): Promise<void> => {
@@ -12,9 +12,15 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
-  const { name, age, phone, email } = req.body as IUser;
+  const { userName, firstName, lastName, password, phone } = req.body as IUser;
   try {
-    const newUser: IUser = new User({ name, age, phone, email });
+    const newUser: IUser = new User({
+      userName,
+      firstName,
+      lastName,
+      password,
+      phone,
+    });
     await newUser.save();
     res.status(201).json({ user: newUser });
   } catch (error) {

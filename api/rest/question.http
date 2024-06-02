@@ -10,16 +10,20 @@ Content-Type: application/json
   "subquestions": [
     {
       "pictures": true,
-      "content": "Subquestion 1"
+      "content": "url"
     }
   ],
   "answer": [
     {
       "pictures": false,
       "content": "Paris"
+    },
+    {
+      "pictures": false,
+      "content": "Lviv"
     }
   ],
-  "questionAnswerDependence": [1, 2],
+  "questionAnswerDependence": [1],
   "suiTable": false
 }
 

@@ -41,7 +41,6 @@ mongoose.connect(url)
         Test.createCollection()
       ]);
       console.log("All collections created");
-      // Start the server
       app.listen(PORT, () =>
         console.log(`Server running on http://localhost:${PORT}`)
       );
