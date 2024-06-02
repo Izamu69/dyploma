@@ -4,6 +4,9 @@ import helmet from "helmet";
 import userRoutes from "./routes/userRoute";
 import questionRoutes from "./routes/questionRoute";
 import testRoutes from "./routes/testController";
+import User from "./models/user";
+import Test from "./models/test";
+import Question from "./models/question";
 
 const app = express();
 app.use(helmet());
@@ -27,14 +30,25 @@ app.use(userRoutes);
 app.use(questionRoutes);
 app.use(testRoutes);
 
-const url: string = `mongodb://mongodb:27017/users`;
-mongoose
-  .connect(url)
-  .then(() =>
-    app.listen(PORT, () =>
-      console.log(`Server running on http://localhost:${PORT}`)
-    )
-  )
+const url: string = `mongodb://mongodb:27017/mydb`;
+mongoose.connect(url)
+  .then(async () => {
+    console.log("Connected to MongoDB");
+    try {
+      await Promise.all([
+        User.createCollection(),
+        Question.createCollection(),
+        Test.createCollection()
+      ]);
+      console.log("All collections created");
+      // Start the server
+      app.listen(PORT, () =>
+        console.log(`Server running on http://localhost:${PORT}`)
+      );
+    } catch (error) {
+      console.error("Error creating collections:", error);
+    }
+  })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
   });
