@@ -1,7 +1,4 @@
-// src/SignInForm.jsx
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 const SignInForm = () => {
   return (
@@ -16,12 +13,12 @@ const SignInForm = () => {
         <form>
           <div className="mb-4">
             <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="email">
-              Email address
+              Username
             </label>
             <input
               className="w-full px-3 py-2 text-gray-300 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:shadow-outline"
-              id="email"
-              type="email"
+              id="userName"
+              type="text"
             />
           </div>
           <div className="mb-4">
@@ -50,17 +47,6 @@ const SignInForm = () => {
             Sign in
           </button>
         </form>
-        <div className="mt-6 text-center text-gray-400">
-          <p>Or continue with</p>
-          <div className="flex justify-center mt-4">
-            <button className="mx-2 bg-gray-700 p-3 rounded">
-              <FontAwesomeIcon icon={faGithub} className="w-6 h-6 text-white" />
-            </button>
-            <button className="mx-2 bg-gray-700 p-3 rounded">
-              <FontAwesomeIcon icon={faGoogle} className="w-6 h-6 text-white" />
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

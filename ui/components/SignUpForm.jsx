@@ -1,4 +1,3 @@
-// src/SignUpForm.jsx
 import React, { useState } from 'react';
 
 const SignUpForm = () => {
@@ -57,7 +56,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-900">
+    <div className="flex items-center justify-center bg-gray-900 pt-16">
       <div className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold text-center text-white">Sign up to your account</h2>
         <div className="mb-4 text-center">
