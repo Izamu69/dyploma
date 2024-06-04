@@ -37,10 +37,10 @@ const Header = () => {
               }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <a href="#" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mb-0 md:mr-6">
+            <a href="#" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
               Dashboard
             </a>
-            <a href="#" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mb-0 md:mr-6">
+            <a href="#" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
               Browse
             </a>
             <div className="flex items-center space-x-4">
