@@ -36,12 +36,9 @@ const SignInForm = () => {
               <input className="mr-2 leading-tight accent-teal-600 rounded" type="checkbox" />
               <span className="text-sm">Remember me</span>
             </label>
-            <a className="text-sm text-gray-400 hover:text-gray-300 underline" href="#">
-              Forgot your password?
-            </a>
           </div>
           <button
-            className="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline"
+            className="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
             type="button"
           >
             Sign in

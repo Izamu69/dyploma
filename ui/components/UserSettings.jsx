@@ -10,7 +10,7 @@ const UserSettings = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-gray-900 text-gray-300">
+        <div className="flex flex-col md:flex-row">
             <aside className="w-64 bg-gray-900">
                 <nav className="p-8">
                     <ul>

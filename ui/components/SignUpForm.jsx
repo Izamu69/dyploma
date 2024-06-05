@@ -120,7 +120,7 @@ const SignUpForm = () => {
             />
           </div>
           <button
-            className="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline"
+            className="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
             type="submit"
           >
             Sign up

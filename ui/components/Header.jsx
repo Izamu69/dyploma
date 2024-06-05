@@ -20,9 +20,9 @@ const Header = () => {
   return (
     <header className="bg-gray-900 text-gray-300">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <div className="flex items-center space-x-4">
+        <Link to="/" className="flex items-center space-x-4">
           <span className="text-white text-xl font-bold">Stason</span>
-        </div>
+        </Link>
         <div className="flex items-center space-x-4 md:hidden">
           <button onClick={toggleMenu} className="focus:outline-none">
             <FontAwesomeIcon icon={isOpen ? faTimes : faBars} className="w-6 h-6 text-white" />
