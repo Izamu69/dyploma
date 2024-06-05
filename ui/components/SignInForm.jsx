@@ -2,17 +2,17 @@ import React from 'react';
 
 const SignInForm = () => {
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-900">
+    <div className=" flex items-center justify-center bg-gray-900 pt-16">
       <div className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold text-center text-white">Sign in to your account</h2>
         <div className="mb-4 text-center">
-          <a className="text-sm text-gray-400 hover:text-gray-300 underline" href="#">
+          <a className="text-sm text-gray-400 hover:text-gray-300 underline" href="/signup">
             or sign up for a new account
           </a>
         </div>
         <form>
           <div className="mb-4">
-            <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="email">
+            <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="userName">
               Username
             </label>
             <input

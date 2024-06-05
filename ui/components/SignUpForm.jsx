@@ -60,7 +60,7 @@ const SignUpForm = () => {
       <div className="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold text-center text-white">Sign up to your account</h2>
         <div className="mb-4 text-center">
-          <a className="text-sm text-gray-400 hover:text-gray-300 underline" href="#">
+          <a className="text-sm text-gray-400 hover:text-gray-300 underline" href="/signin">
             or sign in to your existing account
           </a>
         </div>
