@@ -10,7 +10,7 @@ const UserSettings = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-900 text-gray-300">
+        <div className="flex flex-col md:flex-row min-h-screen bg-gray-900 text-gray-300">
             <aside className="w-64 bg-gray-900">
                 <nav className="p-8">
                     <ul>
@@ -43,24 +43,24 @@ const UserSettings = () => {
                 {selectedOption === 'profile' && (
                     <div>
                         <div className='bg-gray-800 rounded-lg border border-gray-600'>
-                            <h1 className="flex text-2xl font-bold mb-4 mt-6 ml-8">Profile</h1>
-                            <p className="flex my-8 ml-8">Profile information will be displayed on your dashboard.</p>
+                            <h1 className="flex text-2xl font-bold mb-4 mt-6 mx-8">Profile</h1>
+                            <p className="flex my-8 mx-8">Profile information will be displayed on your dashboard.</p>
                             <form className="space-y-6">
-                                <div className='ml-8'>
+                                <div className='mx-8'>
                                     <label htmlFor="userName" className="flex text-base font-bold">Username</label>
-                                    <input type="text" id="userName" className="mt-1 flex w-1/2 px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                    <input type="text" id="userName" className="mt-1 flex md:w-1/2 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                                 </div>
-                                <div className='ml-8'>
+                                <div className='mx-8'>
                                     <label htmlFor="phone" className="flex text-base font-bold">Phone</label>
-                                    <input type="text" id="phone" className="mt-1 block w-1/2 px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                    <input type="text" id="phone" className="mt-1 block md:w-1/2 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                                 </div>
-                                <div className='ml-8'>
+                                <div className='mx-8'>
                                     <label htmlFor="firstName" className="flex text-base font-bold">First Name</label>
-                                    <input type="text" id="firstName" className="mt-1 block w-2/3 px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                    <input type="text" id="firstName" className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                                 </div>
-                                <div className='ml-8'>
+                                <div className='mx-8'>
                                     <label htmlFor="lastName" className="flex text-base font-bold">Last Name</label>
-                                    <input type="text" id="lastName" className="mt-1 block w-2/3 px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                    <input type="text" id="lastName" className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                                 </div>
                                 <div className='bg-gray-700 rounded-b-lg px-6 py-4 text-right'>
                                     <button type="submit" className="bg-teal-600 text-white py-2 px-8 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold">Save</button>
@@ -69,7 +69,7 @@ const UserSettings = () => {
                         </div>
                         <div className="bg-gray-800 rounded-lg border border-gray-600 mt-8 p-6">
                             <h2 className="flex text-xl font-bold mb-4">Danger Zone</h2>
-                            <p className="flex mb-4">Careful, these actions cannot be undone.</p>
+                            <p className="flex mb-4">Careful, this action cannot be undone.</p>
                             <div className="space-y-4">
                                 <button className="flex items-center bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline">
                                     <FontAwesomeIcon icon={faTrash} className="w-5 h-5 mr-2" />
@@ -82,19 +82,19 @@ const UserSettings = () => {
 
                 {selectedOption === 'password' && (
                     <div className='bg-gray-800 rounded-lg border border-gray-600'>
-                        <h1 className="flex text-2xl font-bold mb-4 mt-6 ml-8">Change you password</h1>
+                        <h1 className="flex text-2xl font-bold mb-4 mt-6 mx-8">Change your password</h1>
                         <form className="space-y-6">
-                            <div className='ml-8'>
+                            <div className='mx-8'>
                                 <label htmlFor="currentPassword" className="flex text-base font-bold">Current password</label>
-                                <input type="password" id="currentPassword" className="mt-1 flex w-2/3 px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                <input type="password" id="currentPassword" className="mt-1 flex md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                             </div>
-                            <div className='ml-8'>
+                            <div className='mx-8'>
                                 <label htmlFor="newPassword" className="flex text-base font-bold">New password</label>
-                                <input type="password" id="newPassword" className="mt-1 block w-2/3 px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                <input type="password" id="newPassword" className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                             </div>
-                            <div className='ml-8'>
+                            <div className='mx-8'>
                                 <label htmlFor="confirmPassword" className="flex text-base font-bold">Password confirmation</label>
-                                <input type="password" id="confirmPassword" className="mt-1 block w-2/3 px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                <input type="password" id="confirmPassword" className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                             </div>
                             <div className='bg-gray-700 rounded-b-lg px-6 py-4 text-right'>
                                 <button type="submit" className="bg-teal-600 text-white py-2 px-8 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold">Save</button>

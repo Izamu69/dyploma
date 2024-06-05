@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import './Header.css';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,12 +49,14 @@ const Header = () => {
               <a href="/settings" className="hover:text-white hover:underline font-bold">
                 Settings
               </a>
+              <Link to="/signup">
               <button
                 className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
-                type="submit"
+                type="button"
               >
                 Sign up
               </button>
+              </Link>
             </div>
           </div>
         </nav>
