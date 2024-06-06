@@ -6,6 +6,7 @@ import UserSettings from './components/UserSettings';
 import SignInForm from './components/SignInForm';
 import SignUpForm from './components/SignUpForm';
 import Landing from './components/Landing';
+import CreateTest from './components/CreateTest';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/signin" element={<SignInForm />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/settings" element={<UserSettings />} />
+          <Route path="/createtest" element={<CreateTest />} />
         </Routes>
       </div>
     </BrowserRouter>
