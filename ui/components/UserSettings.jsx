@@ -51,8 +51,8 @@ const UserSettings = () => {
                                     <input type="text" id="userName" className="mt-1 flex md:w-1/2 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                                 </div>
                                 <div className='mx-8'>
-                                    <label htmlFor="phone" className="flex text-base font-bold">Phone</label>
-                                    <input type="text" id="phone" className="mt-1 block md:w-1/2 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
+                                    <label htmlFor="email" className="flex text-base font-bold">Email</label>
+                                    <input type="email" id="email" className="mt-1 block md:w-1/2 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
                                 </div>
                                 <div className='mx-8'>
                                     <label htmlFor="firstName" className="flex text-base font-bold">First Name</label>

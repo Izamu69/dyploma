@@ -7,7 +7,7 @@ const SignUpForm = () => {
     lastName: '',
     password: '',
     confirmPassword: '',
-    phone: '',
+    email: '',
   });
 
   const [error, setError] = useState('');
@@ -40,7 +40,7 @@ const SignUpForm = () => {
           firstName: formData.firstName || ' ', // Allow empty first name
           lastName: formData.lastName || ' ', // Allow empty last name
           password: formData.password,
-          phone: formData.phone,
+          email: formData.email,
         }),
       });
 
@@ -67,6 +67,19 @@ const SignUpForm = () => {
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {success && <p className="text-green-500 text-sm">{success}</p>}
         <form onSubmit={handleSubmit}>
+          <div className="mb-6">
+            <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="email">
+              Email
+            </label>
+            <input
+              className="w-full px-3 py-2 text-gray-300 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
           <div className="mb-4">
             <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="userName">
               Username
@@ -106,19 +119,7 @@ const SignUpForm = () => {
               required
             />
           </div>
-          <div className="mb-6">
-            <label className="flex text-gray-400 text-sm font-bold mb-2" htmlFor="phone">
-              Phone
-            </label>
-            <input
-              className="w-full px-3 py-2 text-gray-300 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:shadow-outline"
-              id="phone"
-              type="text"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
+
           <button
             className="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
             type="submit"

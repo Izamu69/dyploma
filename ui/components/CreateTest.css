@@ -1,0 +1,24 @@
+/* For WebKit-based browsers (Chrome, Safari, Opera) */
+::-webkit-scrollbar {
+    width: 8px; /* Adjust the width as desired */
+    height: 8px; /* Adjust the height as desired */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background-color: #1f2937; /* Dark mode background color */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #4b5563; /* Dark mode thumb color */
+    border-radius: 4px; /* Rounded corners */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280; /* Dark mode thumb color on hover */
+  }
+  
+  /* For Firefox */
+  * {
+    scrollbar-width: thin; /* Adjust the width as desired */
+    scrollbar-color: #4b5563 #1f2937; /* Dark mode thumb color and track color */
+  }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import './Header.css';
 import { Link } from 'react-router-dom';
 
@@ -45,7 +45,7 @@ const Header = () => {
               Browse
             </a>
             <div className="flex items-center space-x-4">
-              <FontAwesomeIcon icon={faBell} className="w-5 h-5 cursor-pointer hover:text-white" />
+              <Link to="/createtest"><FontAwesomeIcon icon={faPlus} className="w-5 h-5 cursor-pointer hover:text-white"/></Link>
               <a href="/settings" className="hover:text-white hover:underline font-bold">
                 Settings
               </a>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import './CreateTest.css';
 
 const CreateTest = () => {
+    const [testName, setTestName] = useState('');
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -11,13 +13,22 @@ const CreateTest = () => {
 
     const handleQuestionChange = (index, field, value) => {
         const newQuestions = [...questions];
-        newQuestions[index][field] = value;
+        if (field === 'type') {
+            newQuestions[index][field] = value;
+            newQuestions[index].options = []; // Clear options when changing type
+        } else {
+            newQuestions[index][field] = value;
+        }
         setQuestions(newQuestions);
     };
 
     const handleAddOption = (index) => {
         const newQuestions = [...questions];
-        newQuestions[index].options.push({ text: '', isCorrect: false });
+        if (questions[index].type === 'matching') {
+            newQuestions[index].options.push({ left: '', right: '' });
+        } else {
+            newQuestions[index].options.push({ text: '', isCorrect: false });
+        }
         setQuestions(newQuestions);
     };
 
@@ -35,7 +46,7 @@ const CreateTest = () => {
 
     const handleSaveTest = () => {
         // Handle saving the test
-        console.log('Test Saved', questions);
+        console.log('Test Saved', { testName, questions });
     };
 
     const handleNextQuestion = () => {
@@ -65,14 +76,23 @@ const CreateTest = () => {
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
             <h1 className="text-4xl font-bold mb-8">Create Your Test</h1>
+            <div className="mb-6">
+                <label className="block text-xl font-bold mb-2">Test Name</label>
+                <input
+                    type="text"
+                    value={testName}
+                    onChange={(e) => setTestName(e.target.value)}
+                    className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
+                />
+            </div>
             <button onClick={handleAddQuestion} className="bg-teal-600 text-white py-2 px-4 rounded mb-6 hover:bg-teal-700">Add Question</button>
             {questions.length > 0 && (
                 <div>
                     <div className="flex justify-between mb-4">
-                        <div className="text-xl font-bold">
+                        <div className="text-xl font-bold mr-2">
                             Question {currentQuestionIndex + 1} of {questions.length}
                         </div>
-                        <div className="space-x-2">
+                        <div className="space-x-2 overflow-x-auto whitespace-nowrap">
                             {questions.map((_, index) => (
                                 <div key={index} className="inline-block">
                                     <button
@@ -81,12 +101,14 @@ const CreateTest = () => {
                                     >
                                         {index + 1}
                                     </button>
-                                    <button
-                                        onClick={() => handleDeleteQuestion(index)}
-                                        className="ml-1 py-2 px-2 bg-red-600 text-white rounded hover:bg-red-700"
-                                    >
-                                        &times;
-                                    </button>
+                                    {currentQuestionIndex === index && (
+                                        <button
+                                            onClick={() => handleDeleteQuestion(index)}
+                                            className="ml-1 py-2 px-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                        >
+                                            &times;
+                                        </button>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -95,7 +117,7 @@ const CreateTest = () => {
                         <div className="mb-4">
                             <label className="block text-xl font-bold mb-2">Question</label>
                             <textarea
-                                value={currentQuestion.content}
+                                value={currentQuestion.content || ''}
                                 onChange={(e) => handleQuestionChange(currentQuestionIndex, 'content', e.target.value)}
                                 className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
                             ></textarea>
@@ -103,12 +125,11 @@ const CreateTest = () => {
                         <div className="mb-4">
                             <label className="block text-xl font-bold mb-2">Question Type</label>
                             <select
-                                value={currentQuestion.type}
+                                value={currentQuestion.type || 'single'}
                                 onChange={(e) => handleQuestionChange(currentQuestionIndex, 'type', e.target.value)}
                                 className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
                             >
-                                <option value="single">Single Correct Answer</option>
-                                <option value="multiple">Multiple Correct Answers</option>
+                                <option value="single">One or multiple answers</option>
                                 <option value="matching">Matching Pairs</option>
                             </select>
                         </div>
@@ -120,14 +141,14 @@ const CreateTest = () => {
                                         <input
                                             type="text"
                                             placeholder="Left"
-                                            value={option.left}
+                                            value={option.left || ''}
                                             onChange={(e) => handleOptionChange(currentQuestionIndex, oIndex, 'left', e.target.value)}
                                             className="w-1/2 p-2 mr-2 bg-gray-700 border border-gray-600 rounded"
                                         />
                                         <input
                                             type="text"
                                             placeholder="Right"
-                                            value={option.right}
+                                            value={option.right || ''}
                                             onChange={(e) => handleOptionChange(currentQuestionIndex, oIndex, 'right', e.target.value)}
                                             className="w-1/2 p-2 bg-gray-700 border border-gray-600 rounded"
                                         />
@@ -143,15 +164,15 @@ const CreateTest = () => {
                                     <div key={oIndex} className="flex mb-2">
                                         <input
                                             type="text"
-                                            value={option.text}
+                                            value={option.text || ''}
                                             onChange={(e) => handleOptionChange(currentQuestionIndex, oIndex, 'text', e.target.value)}
                                             className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
                                         />
                                         <input
                                             type="checkbox"
-                                            checked={option.isCorrect}
+                                            checked={option.isCorrect || false}
                                             onChange={(e) => handleOptionChange(currentQuestionIndex, oIndex, 'isCorrect', e.target.checked)}
-                                            className="ml-2"
+                                            className="ml-2 leading-tight accent-teal-600 rounded"
                                         />
                                         <button onClick={() => handleRemoveOption(currentQuestionIndex, oIndex)} className="bg-red-600 text-white py-2 px-4 rounded ml-2 hover:bg-red-700">Remove</button>
                                     </div>
@@ -166,7 +187,9 @@ const CreateTest = () => {
                     </div>
                 </div>
             )}
-            <button onClick={handleSaveTest} className="bg-teal-600 text-white py-2 px-4 rounded mt-6 hover:bg-teal-700">Save Test</button>
+            {questions.length > 0 && testName.trim() !== '' && (
+                <button onClick={handleSaveTest} className="bg-teal-600 text-white py-2 px-4 rounded mt-6 hover:bg-teal-700">Save Test</button>
+            )}
         </div>
     );
 };
