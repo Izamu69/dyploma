@@ -14,7 +14,7 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
-  const { userName, firstName, lastName, password, phone } = req.body as IUser;
+  const { userName, firstName, lastName, password, email } = req.body as IUser;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser: IUser = new User({
@@ -22,7 +22,7 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
       firstName,
       lastName,
       password: hashedPassword,
-      phone,
+      email,
     });
     await newUser.save();
     res.status(201).json({ user: newUser });
