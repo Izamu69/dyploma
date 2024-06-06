@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { IUser } from "../models/user";
 import User from "../models/user";
 
@@ -14,11 +16,12 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
 const createUser = async (req: Request, res: Response): Promise<void> => {
   const { userName, firstName, lastName, password, phone } = req.body as IUser;
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser: IUser = new User({
       userName,
       firstName,
       lastName,
-      password,
+      password: hashedPassword,
       phone,
     });
     await newUser.save();
@@ -32,6 +35,9 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
   const updatedFields = req.body as Partial<IUser>;
   try {
+    if (updatedFields.password) {
+      updatedFields.password = await bcrypt.hash(updatedFields.password, 10);
+    }
     const user: IUser | null = await User.findByIdAndUpdate(
       userId,
       updatedFields,
@@ -68,6 +74,9 @@ const patchUser = async (req: Request, res: Response): Promise<void> => {
   const updatedFields: Partial<IUser> = req.body;
 
   try {
+    if (updatedFields.password) {
+      updatedFields.password = await bcrypt.hash(updatedFields.password, 10);
+    }
     const updatedUser: IUser | null = await User.findByIdAndUpdate(
       userId,
       { $set: updatedFields },
@@ -85,4 +94,26 @@ const patchUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getUsers, createUser, updateUser, deleteUser, patchUser };
+const loginUser = async (req: Request, res: Response): Promise<void> => {
+  const { userName, password } = req.body;
+  try {
+    const user: IUser | null = await User.findOne({ userName });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(401).json({ message: "Invalid password" });
+      return;
+    }
+    
+    const token = jwt.sign({ userId: user._id }, "your_jwt_secret_key", { expiresIn: '1h' });
+    res.status(200).json({ token, user });
+  } catch (error) {
+    res.status(500).json({ message: "Error logging in" });
+  }
+};
+
+export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser };
