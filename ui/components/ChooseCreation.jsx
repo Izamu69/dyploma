@@ -7,7 +7,7 @@ const ChooseCreation = () => {
     const navigate = useNavigate();
 
     const handleCreateCourse = () => {
-        navigate('/createlesson');
+        navigate('/createcourse');
     };
 
     const handleCreateTest = () => {
