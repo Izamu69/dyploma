@@ -41,11 +41,11 @@ const Header = () => {
             <a href="#" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
               Dashboard
             </a>
-            <a href="#" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+            <a href="/course" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
               Browse
             </a>
             <div className="flex items-center space-x-4">
-              <Link to="/createtest"><FontAwesomeIcon icon={faPlus} className="w-5 h-5 cursor-pointer hover:text-white"/></Link>
+              <Link to="/create"><FontAwesomeIcon icon={faPlus} className="w-5 h-5 cursor-pointer hover:text-white"/></Link>
               <a href="/settings" className="hover:text-white hover:underline font-bold">
                 Settings
               </a>
