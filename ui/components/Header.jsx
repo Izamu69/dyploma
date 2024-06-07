@@ -38,7 +38,7 @@ const Header = () => {
               }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <a href="#" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+            <a href="/dashboard" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
               Dashboard
             </a>
             <a href="/course" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">

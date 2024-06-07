@@ -20,14 +20,14 @@ const ChooseCreation = () => {
             <div className="space-x-4 flex">
                 <button
                     onClick={handleCreateCourse}
-                    className="flex items-center bg-teal-600 text-white py-4 px-8 rounded mb-4 hover:bg-teal-700 transition duration-300 transform hover:scale-105"
+                    className="flex items-center bg-teal-600 text-white py-4 px-8 rounded mb-4 hover:bg-teal-700 transition duration-300 transform hover:scale-105 font-bold"
                 >
                     <FontAwesomeIcon icon={faBook} className="mr-2" />
                     Create Course
                 </button>
                 <button
                     onClick={handleCreateTest}
-                    className="flex items-center bg-teal-600 text-white py-4 px-8 rounded mb-4 hover:bg-teal-700 transition duration-300 transform hover:scale-105"
+                    className="flex items-center bg-teal-600 text-white py-4 px-8 rounded mb-4 hover:bg-teal-700 transition duration-300 transform hover:scale-105 font-bold"
                 >
                     <FontAwesomeIcon icon={faClipboardList} className="mr-2" />
                     Create Test

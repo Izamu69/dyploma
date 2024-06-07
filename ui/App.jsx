@@ -11,6 +11,7 @@ import LessonCreator from './components/LessonCreator';
 import ChooseCreation from './components/ChooseCreation';
 import CoursePage from './components/CoursePage';
 import CreateCoursePage from './components/CreateCoursePage';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/create" element={<ChooseCreation />} />
           <Route path="/course" element={<CoursePage />} />
           <Route path="/createcourse" element={<CreateCoursePage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </BrowserRouter>
