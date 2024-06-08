@@ -3,8 +3,9 @@ import { model, Schema, Document, Types } from "mongoose";
 export interface ICource extends Document {
   id: number;
   courceName: string;
-  lessonIds: Types.ObjectId[];
-  testIds: Types.ObjectId[];
+  lessonIds?: Types.ObjectId[];
+  testIds?: Types.ObjectId[];
+  files?: string[];
 }
 
 const courceSchema: Schema = new Schema(
@@ -25,6 +26,7 @@ const courceSchema: Schema = new Schema(
         ref: "Test",
       },
     ],
+    filess: [{type: String}]
   },
   { timestamps: true }
 );

@@ -4,7 +4,7 @@ export interface IQuestion extends Document {
   id: Types.ObjectId;
   question: string;
   subquestions?: { pictures: boolean; content: string }[];
-  answer?: { pictures: boolean; content: string }[];
+  answers: { pictures: boolean; content: string }[];
   questionAnswerDependence: number[];
   suiTable: boolean;
 }
