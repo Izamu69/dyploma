@@ -15,6 +15,6 @@ userRoutes.post("/users", createUser);
 userRoutes.put("/users/:id", updateUser);
 userRoutes.delete("/users/:id", deleteUser);
 userRoutes.patch("/users/:id", patchUser);
-userRoutes.get("/users/login", loginUser);
+userRoutes.post("/users/login", loginUser);
 
 export default userRoutes;

@@ -10,13 +10,13 @@ const SignInForm = () => {
   const handleLogin = async () => {
     try {
       const response = await fetch('http://localhost:3000/users/login', {
-        method: 'GET',
+        method: 'POST', // Ensure the method is POST
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ userName, password }),
       });
-      console.log("response", response);
+
       if (!response.ok) {
         throw new Error('Login failed');
       }
@@ -56,6 +56,7 @@ const SignInForm = () => {
               type="text"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
+              required
             />
           </div>
           <div className="mb-4">
@@ -68,6 +69,7 @@ const SignInForm = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <div className="mb-4 flex items-center justify-between">

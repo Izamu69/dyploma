@@ -43,7 +43,7 @@ const SignUpForm = () => {
           email: formData.email,
         }),
       });
-
+      console.log(response);
       if (response.ok) {
         setSuccess('Account created successfully');
       } else {
