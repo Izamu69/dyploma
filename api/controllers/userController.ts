@@ -88,7 +88,8 @@ const patchUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    res.status(200).json({ user: updatedUser });
+    const user: IUser | null = await User.findById(userId);
+    res.status(200).json({ user: user });
   } catch (error) {
     res.status(500).json({ message: "Error updating user" });
   }

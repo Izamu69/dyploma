@@ -17,7 +17,7 @@ const questionSchema: Schema = new Schema({
       content: { type: String, required: true }
     }
   ],
-  answer: [
+  answers: [
     {
       pictures: { type: Boolean, default: false },
       content: { type: String, required: true }

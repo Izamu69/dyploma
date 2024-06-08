@@ -12,12 +12,12 @@ const getQuestions = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createQuestion = async (req: Request, res: Response): Promise<void> => {
-  const { question, subquestions, answer, questionAnswerDependence, suiTable } = req.body as IQuestion;
+  const { question, subquestions, answers, questionAnswerDependence, suiTable } = req.body as IQuestion;
   try {
     const newQuestion: IQuestion = new Question({
       question,
       subquestions,
-      answer,
+      answers,
       questionAnswerDependence,
       suiTable,
     });

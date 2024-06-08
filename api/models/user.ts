@@ -16,11 +16,11 @@ const userSchema: Schema = new Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      required: false,
     },
     lastName: {
       type: String,
-      required: true,
+      required: false,
     },
     userName: {
       type: String,
@@ -37,7 +37,7 @@ const userSchema: Schema = new Schema(
     },
     files: {
       type: String,
-      required: true,
+      required: false,
     },
     
   },

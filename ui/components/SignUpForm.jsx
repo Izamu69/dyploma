@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
     userName: '',
-    firstName: '',
-    lastName: '',
     password: '',
     confirmPassword: '',
     email: '',
@@ -37,8 +35,6 @@ const SignUpForm = () => {
         },
         body: JSON.stringify({
           userName: formData.userName,
-          firstName: formData.firstName || ' ', // Allow empty first name
-          lastName: formData.lastName || ' ', // Allow empty last name
           password: formData.password,
           email: formData.email,
         }),

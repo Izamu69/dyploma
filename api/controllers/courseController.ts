@@ -6,7 +6,7 @@ const getCourses = async (req: Request, res: Response): Promise<void> => {
     const courses: ICourse[] = await Course.find();
     res.status(200).json({ success: true, courses });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching courses", error: error.message });
+    res.status(500).json({ success: false, message: "Error fetching courses", error: error });
   }
 };
 
@@ -22,7 +22,7 @@ const createCourse = async (req: Request, res: Response): Promise<void> => {
     await newCourse.save();
     res.status(201).json({ success: true, course: newCourse });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error creating course", error: error.message });
+    res.status(500).json({ success: false, message: "Error creating course", error: error });
   }
 };
 
@@ -41,7 +41,7 @@ const updateCourse = async (req: Request, res: Response): Promise<void> => {
     }
     res.status(200).json({ success: true, course });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error updating course", error: error.message });
+    res.status(500).json({ success: false, message: "Error updating course", error: error });
   }
 };
 
@@ -55,7 +55,7 @@ const deleteCourse = async (req: Request, res: Response): Promise<void> => {
     }
     res.status(204).json({ success: true, message: "Course deleted" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error deleting course", error: error.message });
+    res.status(500).json({ success: false, message: "Error deleting course", error: error });
   }
 };
 
@@ -77,7 +77,7 @@ const patchCourse = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({ success: true, course: updatedCourse });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error updating course", error: error.message });
+    res.status(500).json({ success: false, message: "Error updating course", error: error });
   }
 };
 
