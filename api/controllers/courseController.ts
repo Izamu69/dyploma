@@ -11,13 +11,14 @@ const getCourses = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createCourse = async (req: Request, res: Response): Promise<void> => {
-  const { courseName, lessonIds, testIds, files } = req.body as ICourse;
+  const { courseName, lessonIds, testIds, files, authorId } = req.body as ICourse;
   try {
     const newCourse: ICourse = new Course({
       courseName,
       lessonIds,
       testIds,
       files,
+      authorId,
     });
     await newCourse.save();
     res.status(201).json({ success: true, course: newCourse });

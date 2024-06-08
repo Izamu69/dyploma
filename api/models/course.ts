@@ -1,11 +1,12 @@
 import { model, Schema, Document, Types } from "mongoose";
 
 export interface ICourse extends Document {
-  id: number;
+  id: Types.ObjectId;
   courseName: string;
   lessonIds?: Types.ObjectId[];
   testIds?: Types.ObjectId[];
   files?: string[];
+  authorId: Types.ObjectId;
 }
 
 const courseSchema: Schema = new Schema(
@@ -26,7 +27,12 @@ const courseSchema: Schema = new Schema(
         ref: "Test",
       },
     ],
-    filess: [{type: String}]
+    files: [{type: String}],
+    authorId: {
+      type: Schema.Types.ObjectId, 
+      ref: "User", 
+      required: true,
+    },
   },
   { timestamps: true }
 );

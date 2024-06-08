@@ -7,6 +7,8 @@ import testRoutes from "./routes/testController";
 import User from "./models/user";
 import Test from "./models/test";
 import Question from "./models/question";
+import Course from "./models/course";
+import courseRoutes from "./routes/courseRoute";
 
 const app = express();
 app.use(helmet());
@@ -29,6 +31,7 @@ app.use(allowCrossOrigin);
 app.use(userRoutes);
 app.use(questionRoutes);
 app.use(testRoutes);
+app.use(courseRoutes);
 
 const url: string = `mongodb://mongodb:27017/mydb`;
 mongoose.connect(url)
@@ -38,7 +41,8 @@ mongoose.connect(url)
       await Promise.all([
         User.createCollection(),
         Question.createCollection(),
-        Test.createCollection()
+        Test.createCollection(),
+        Course.createCollection()
       ]);
       console.log("All collections created");
       app.listen(PORT, () =>

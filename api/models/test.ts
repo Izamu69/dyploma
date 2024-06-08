@@ -1,7 +1,7 @@
 import { model, Schema, Document, Types } from "mongoose";
 
 export interface ITest extends Document {
-  id: number;
+  id: Types.ObjectId;
   associatedLessonIds: Types.ObjectId[];
   testName: string;
   questionIds: Types.ObjectId[];

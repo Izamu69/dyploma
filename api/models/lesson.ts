@@ -1,7 +1,7 @@
 import { model, Schema, Document, Types } from "mongoose";
 
 export interface ILesson extends Document {
-  id: number;
+  id: Types.ObjectId;
   lessonName: string;
   sections?: { type: string; content: string }[];
   answers: { pictures: boolean; content: string }[];

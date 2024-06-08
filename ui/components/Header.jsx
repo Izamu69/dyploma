@@ -6,14 +6,21 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+    setShowDropdown(false);
+  };
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
   };
 
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
       setIsOpen(false);
+      setShowDropdown(false);
     }
   };
 
@@ -45,17 +52,27 @@ const Header = () => {
               Browse
             </a>
             <div className="flex items-center space-x-4">
-              <Link to="/create"><FontAwesomeIcon icon={faPlus} className="w-5 h-5 cursor-pointer hover:text-white"/></Link>
+              <div className="relative"><FontAwesomeIcon icon={faPlus} onClick={toggleDropdown} className="w-5 h-5 cursor-pointer hover:text-white" />
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 bg-gray-800 text-gray-300 p-2 rounded-lg shadow-md">
+                    <a href="/createcourse" className="block py-1 px-2 hover:text-white font-bold hover:underline">
+                      Course
+                    </a>
+                    <a href="/createtest" className="block py-1 px-2 hover:text-white font-bold hover:underline">
+                      Test
+                    </a>
+                  </div>
+                )}</div>
               <a href="/settings" className="hover:text-white hover:underline font-bold">
                 Settings
               </a>
               <Link to="/signup">
-              <button
-                className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
-                type="button"
-              >
-                Sign up
-              </button>
+                <button
+                  className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
+                  type="button"
+                >
+                  Sign up
+                </button>
               </Link>
             </div>
           </div>
