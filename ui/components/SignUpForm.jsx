@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +8,7 @@ const SignUpForm = () => {
     confirmPassword: '',
     email: '',
   });
+  const navigate = useNavigate();
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -42,6 +44,7 @@ const SignUpForm = () => {
       console.log(response);
       if (response.ok) {
         setSuccess('Account created successfully');
+        navigate('/signin');
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Error creating account');

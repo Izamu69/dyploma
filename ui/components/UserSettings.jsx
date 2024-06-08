@@ -11,19 +11,45 @@ const UserSettings = () => {
         firstName: '',
         lastName: '',
     });
+    const [passwordFormData, setPasswordFormData] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+    });
     const navigate = useNavigate();
+    const [showConfirmation, setShowConfirmation] = useState(false);
+    const [confirmationMessage, setConfirmationMessage] = useState('');
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            setUserId(user._id); // Assuming user._id is the property containing the user ID
-            setFormData({
-                userName: user.userName,
-                firstName: user.firstName,
-                lastName: user.lastName,
-            });
-        }
+        const handleUserData = () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                setUserId(user._id);
+                setFormData({
+                    userName: user.userName || '',
+                    firstName: user.firstName || '',
+                    lastName: user.lastName || '',
+                });
+            } else {
+                setUserId(''); // Set userId to empty string if user data is not found
+                setFormData({
+                    userName: '',
+                    firstName: '',
+                    lastName: '',
+                });
+            }
+        };
+
+        handleUserData();
+
+        // Remove the storage event listener
+        return () => {
+            window.removeEventListener('storage', handleUserData);
+        };
     }, []);
+
 
     const handleOptionClick = (option) => {
         setSelectedOption(option);
@@ -36,6 +62,16 @@ const UserSettings = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!userId) {
+            setErrorMessage('User ID not found');
+            setShowError(true);
+            setTimeout(() => {
+                setShowError(false);
+            }, 3000); // Hide the error after 3 seconds
+            return;
+        }
+
         try {
             const response = await fetch(`http://localhost:3000/users/${userId}`, {
                 method: 'PATCH',
@@ -45,17 +81,131 @@ const UserSettings = () => {
                 body: JSON.stringify(formData),
             });
 
-            const user = await response.json();
+            const updatedUser = await response.json();
 
             if (response.ok) {
                 // Update local storage with the new user data
-                localStorage.setItem('user', JSON.stringify(user));
-                console.log('User data updated successfully');
+                localStorage.setItem('user', JSON.stringify(updatedUser.user));
+                // Update the component's state with the new user data
+                setUserId(updatedUser.user._id);
+                setFormData({
+                    userName: updatedUser.user.userName,
+                    firstName: updatedUser.user.firstName,
+                    lastName: updatedUser.user.lastName,
+                });
+                setConfirmationMessage('User data updated successfully');
+                setShowConfirmation(true);
+                setTimeout(() => {
+                    setShowConfirmation(false);
+                }, 3000); // Hide the confirmation after 3 seconds
             } else {
-                console.error('Failed to update user data');
+                setErrorMessage('Failed to update user data');
+                setShowError(true);
+                setTimeout(() => {
+                    setShowError(false);
+                }, 3000); // Hide the error after 3 seconds
             }
         } catch (error) {
+            setErrorMessage('Error updating user data');
+            setShowError(true);
+            setTimeout(() => {
+                setShowError(false);
+            }, 3000); // Hide the error after 3 seconds
             console.error('Error updating user data:', error);
+        }
+    };
+
+    const handlePasswordChange = (e) => {
+        const { id, value } = e.target;
+        setPasswordFormData({ ...passwordFormData, [id]: value });
+    };
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!userId) {
+            setErrorMessage('User ID not found');
+            setShowError(true);
+            setTimeout(() => {
+                setShowError(false);
+            }, 3000); // Hide the error after 3 seconds
+            return;
+        }
+
+        // Perform validation on the new password and confirmation
+        if (passwordFormData.newPassword !== passwordFormData.confirmPassword) {
+            setErrorMessage('New password and confirmation do not match');
+            setShowError(true);
+            setTimeout(() => {
+                setShowError(false);
+            }, 3000); // Hide the error after 3 seconds
+            return;
+        }
+
+        try {
+            // First, check if the current password is correct
+            const response = await fetch(`http://localhost:3000/users/${userId}/checkPassword`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password: passwordFormData.currentPassword }),
+            });
+
+            if (response.ok) {
+                // Current password is correct, proceed with updating the password
+                const updateResponse = await fetch(`http://localhost:3000/users/${userId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: passwordFormData.newPassword }),
+                });
+
+                const updatedUser = await updateResponse.json();
+
+                if (updateResponse.ok) {
+                    // Update local storage with the new user data
+                    localStorage.setItem('user', JSON.stringify(updatedUser.user));
+                    // Update the component's state with the new user data
+                    setUserId(updatedUser.user._id); // Use updatedUser.user._id for the userId
+                    setFormData({
+                        userName: updatedUser.user.userName,
+                        firstName: updatedUser.user.firstName,
+                        lastName: updatedUser.user.lastName,
+                    });
+                    setConfirmationMessage('Password updated successfully');
+                    setShowConfirmation(true);
+                    setTimeout(() => {
+                        setShowConfirmation(false);
+                    }, 3000); // Hide the confirmation after 3 seconds
+                    // Reset the password form data
+                    setPasswordFormData({
+                        currentPassword: '',
+                        newPassword: '',
+                        confirmPassword: '',
+                    });
+                } else {
+                    setErrorMessage('Failed to update password');
+                    setShowError(true);
+                    setTimeout(() => {
+                        setShowError(false);
+                    }, 3000); // Hide the error after 3 seconds
+                }
+            } else {
+                setErrorMessage('Current password is incorrect');
+                setShowError(true);
+                setTimeout(() => {
+                    setShowError(false);
+                }, 3000); // Hide the error after 3 seconds
+            }
+        } catch (error) {
+            setErrorMessage('Error updating password');
+            setShowError(true);
+            setTimeout(() => {
+                setShowError(false);
+            }, 3000); // Hide the error after 3 seconds
+            console.error('Error updating password:', error);
         }
     };
 
@@ -168,29 +318,70 @@ const UserSettings = () => {
                     </div>
                 )}
 
-                {selectedOption === 'password' && (
-                    <div className='bg-gray-800 rounded-lg border border-gray-600'>
-                        <h1 className="flex text-2xl font-bold mb-4 mt-6 mx-8">Change your password</h1>
-                        <form className="space-y-6">
-                            <div className='mx-8'>
-                                <label htmlFor="currentPassword" className="flex text-base font-bold">Current password</label>
-                                <input type="password" id="currentPassword" className="mt-1 flex md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
-                            </div>
-                            <div className='mx-8'>
-                                <label htmlFor="newPassword" className="flex text-base font-bold">New password</label>
-                                <input type="password" id="newPassword" className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
-                            </div>
-                            <div className='mx-8'>
-                                <label htmlFor="confirmPassword" className="flex text-base font-bold">Password confirmation</label>
-                                <input type="password" id="confirmPassword" className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded" />
-                            </div>
-                            <div className='bg-gray-700 rounded-b-lg px-6 py-4 text-right'>
-                                <button type="submit" className="bg-teal-600 text-white py-2 px-8 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                )}
+                {
+                    selectedOption === 'password' && (
+                        <div className="bg-gray-800 rounded-lg border border-gray-600">
+                            <h1 className="flex text-2xl font-bold mb-4 mt-6 mx-8">Change your password</h1>
+                            <form className="space-y-6" onSubmit={handlePasswordSubmit}>
+                                <div className="mx-8">
+                                    <label htmlFor="currentPassword" className="flex text-base font-bold">
+                                        Current password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="currentPassword"
+                                        value={passwordFormData.currentPassword}
+                                        onChange={handlePasswordChange}
+                                        className="mt-1 flex md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
+                                    />
+                                </div>
+                                <div className="mx-8">
+                                    <label htmlFor="newPassword" className="flex text-base font-bold">
+                                        New password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="newPassword"
+                                        value={passwordFormData.newPassword}
+                                        onChange={handlePasswordChange}
+                                        className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
+                                    />
+                                </div>
+                                <div className="mx-8">
+                                    <label htmlFor="confirmPassword" className="flex text-base font-bold">
+                                        Password confirmation
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        value={passwordFormData.confirmPassword}
+                                        onChange={handlePasswordChange}
+                                        className="mt-1 block md:w-2/3 w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
+                                    />
+                                </div>
+                                <div className="bg-gray-700 rounded-b-lg px-6 py-4 text-right">
+                                    <button
+                                        type="submit"
+                                        className="bg-teal-600 text-white py-2 px-8 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )
+                }
             </main>
+            {showConfirmation && (
+                <div className="fixed bottom-4 left-4 bg-teal-600 text-white px-4 py-2 rounded">
+                    {confirmationMessage}
+                </div>
+            )}
+            {showError && (
+                <div className="fixed bottom-4 left-4 bg-red-600 text-white px-4 py-2 rounded">
+                    {errorMessage}
+                </div>
+            )}
         </div>
     );
 };
