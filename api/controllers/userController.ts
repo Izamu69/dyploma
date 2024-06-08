@@ -96,6 +96,7 @@ const patchUser = async (req: Request, res: Response): Promise<void> => {
 
 const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { userName, password } = req.body;
+  console.log(userName, password);
   try {
     const user: IUser | null = await User.findOne({ userName });
     if (!user) {
@@ -115,5 +116,6 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: "Error logging in" });
   }
 };
+
 
 export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser };
