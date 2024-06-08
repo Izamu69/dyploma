@@ -12,6 +12,7 @@ import ChooseCreation from './components/ChooseCreation';
 import CoursePage from './components/CoursePage';
 import CreateCoursePage from './components/CreateCoursePage';
 import Dashboard from './components/Dashboard';
+import CourseListPage from './components/CourseListPage';
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
           <Route path="/createtest" element={<CreateTest />} />
           <Route path="/createlesson" element={<LessonCreator />} />
           <Route path="/create" element={<ChooseCreation />} />
-          <Route path="/course" element={<CoursePage />} />
+          <Route path="/course" element={<CourseListPage />} />
+          <Route path="/course/:courseId" element={<CoursePage />} />
           <Route path="/createcourse" element={<CreateCoursePage />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>

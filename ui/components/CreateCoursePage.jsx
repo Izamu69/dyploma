@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faPlusCircle, faFile } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const CreateCoursePage = () => {
     const [courseName, setCourseName] = useState('');
-    const [lessons, setLessons] = useState([{ name: '', completed: false }]);
-    const [tests, setTests] = useState([{ name: '', questions: [] }]);
-    const [files, setFiles] = useState([]);
     const [authorId, setAuthorId] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Retrieve user ID from local storage
@@ -16,31 +13,6 @@ const CreateCoursePage = () => {
             setAuthorId(user._id);
         }
     }, []);
-
-    const handleLessonNameChange = (index, event) => {
-        const newLessons = [...lessons];
-        newLessons[index].name = event.target.value;
-        setLessons(newLessons);
-    };
-
-    const handleAddLesson = () => {
-        setLessons([...lessons, { name: '', completed: false }]);
-    };
-
-    const handleTestNameChange = (index, event) => {
-        const newTests = [...tests];
-        newTests[index].name = event.target.value;
-        setTests(newTests);
-    };
-
-    const handleAddTest = () => {
-        setTests([...tests, { name: '', questions: [] }]);
-    };
-
-    const handleFileUpload = (event) => {
-        const uploadedFiles = Array.from(event.target.files);
-        setFiles([...files, ...uploadedFiles]);
-    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -52,24 +24,19 @@ const CreateCoursePage = () => {
                 },
                 body: JSON.stringify({
                     courseName,
-                    lessons,
-                    tests,
-                    files: files.map(file => file.name),
-                    authorId, // Include author ID in the request payload
+                    authorId,
                 }),
             });
 
             const data = await response.json();
             if (response.ok) {
                 console.log('Course created successfully:', data.course);
-                // Redirect to the course details page or perform any other action
+                navigate(`/course/${data.course._id}`);
             } else {
                 console.error('Failed to create course:', data.message);
-                // Handle error, display message to user, etc.
             }
         } catch (error) {
             console.error('Error creating course:', error);
-            // Handle error, display message to user, etc.
         }
     };
 
@@ -84,6 +51,7 @@ const CreateCoursePage = () => {
                         value={courseName}
                         onChange={(e) => setCourseName(e.target.value)}
                         className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
+                        required
                     />
                 </div>
                 <button type="submit" className="bg-teal-600 text-gray-100 rounded-lg px-6 py-3 mt-6 hover:bg-teal-700 font-bold">Create Course</button>

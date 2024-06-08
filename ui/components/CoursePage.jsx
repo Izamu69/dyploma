@@ -1,73 +1,217 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faBookOpen, faFileAlt, faClipboardList, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
+import './CoursePage.css';
 
 const CoursePage = () => {
-    const course = {
-        name: 'Foundations Course',
-        overview: 'This is where it all begins! A hands-on introduction to all of the essential tools you\'ll need to build real, working websites. You\'ll learn what web developers actually do – the foundations you\'ll need for later courses.',
-        sections: [
-            {
-                title: 'Introduction',
-                lessons: [
-                    { name: 'How This Course Will Work', completed: true, link: '/lesson1' },
-                    { name: 'Introduction to Web Development', completed: true, link: '/lesson2' },
-                    { name: 'Motivation and Mindset', completed: true, link: '/lesson3' },
-                    { name: 'Asking For Help', completed: true, link: '/lesson4' },
-                    { name: 'Join the Odin Community', completed: true, link: '/lesson5' },
-                ],
-            },
-            {
-                title: 'Prerequisites',
-                lessons: [
-                    { name: 'Computer Basics', completed: true, link: '/lesson6' },
-                    { name: 'How Does the Web Work?', completed: true, link: '/lesson7' },
-                    { name: 'Installation Overview', completed: true, link: '/lesson8' },
-                    { name: 'Installations', completed: true, link: '/lesson9' },
-                    { name: 'Text Editors', completed: true, link: '/lesson10' },
-                    { name: 'Command Line Basics', completed: true, link: '/lesson11' },
-                    { name: 'Setting up Git', completed: false, link: '/lesson12' },
-                ],
-            },
-        ],
-    };
+    const { courseId } = useParams();
+    const [course, setCourse] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isAuthor, setIsAuthor] = useState(false);
+    const navigate = useNavigate();
+
+    const [isLessonsOpen, setIsLessonsOpen] = useState(true);
+    const [isTestsOpen, setIsTestsOpen] = useState(true);
+    const [isFilesOpen, setIsFilesOpen] = useState(true);
+
+    const lessonsRef = useRef(null);
+    const testsRef = useRef(null);
+    const filesRef = useRef(null);
+
+    useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/courses/${courseId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch course data');
+                }
+                const data = await response.json();
+                setCourse(data.course);
+                setLoading(false);
+
+                const userDataString = localStorage.getItem('user');
+                if (userDataString) {
+                    const userData = JSON.parse(userDataString);
+                    const userId = userData._id;
+                    setIsAuthor(userId === data.course.authorId);
+                }
+            } catch (error) {
+                setError(error);
+                setLoading(false);
+            }
+        };
+
+        fetchCourse();
+    }, [courseId, isAuthor]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
 
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
-            <div className="text-center mb-8">
-                <div className="inline-block bg-gray-800 p-4 rounded-full mb-4">
-                    <FontAwesomeIcon icon={faBookOpen} size="3x" className="text-teal-600" />
-                </div>
-                <h1 className="text-4xl font-bold">{course.name}</h1>
-            </div>
-            <div className="max-w-4xl mx-auto">
-                <div className="bg-gray-800 p-6 rounded-lg mb-8">
-                    <h2 className="text-2xl font-bold mb-4">Overview</h2>
-                    <p>{course.overview}</p>
-                </div>
-                {course.sections.map((section, sectionIndex) => (
-                    <div key={sectionIndex} className="mb-6">
-                        <h3 className="text-2xl font-bold mb-4">{section.title}</h3>
-                        <div className="bg-gray-800 p-4 rounded-lg">
-                            {section.lessons.map((lesson, lessonIndex) => (
-                                <div key={lessonIndex} className="flex justify-between items-center mb-2">
-                                    <Link to={lesson.link} className="flex-grow text-left">
-                                        <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                            <FontAwesomeIcon icon={faBookOpen} size='lg' className="text-gray-600" /> {lesson.name}
-                                        </button>
-                                    </Link>
-                                    <FontAwesomeIcon
-                                        icon={faCheckCircle}
-                                        className={`ml-2 ${lesson.completed ? 'text-teal-600' : 'text-gray-500'}`}
-                                        size="2x"
-                                    />
-                                </div>
-                            ))}
+            {course && (
+                <>
+                    <div className="text-center mb-8">
+                        <div className="inline-block bg-gray-800 p-4 rounded-full mb-4">
+                            <FontAwesomeIcon icon={faBookOpen} size="3x" className="text-teal-600" />
+                        </div>
+                        <h1 className="text-4xl font-bold">{course.courseName}</h1>
+                    </div>
+                    <div className="max-w-4xl mx-auto">
+                        <div className="mb-6">
+                            <h3
+                                className="text-2xl font-bold mb-4 cursor-pointer flex justify-center gap-2"
+                                onClick={() => setIsLessonsOpen(!isLessonsOpen)}
+                            >
+                                Lessons
+                                {isAuthor && (
+                                    <button onClick={() => handleAddLesson()} className="text-gray-300 hover:text-gray-400">
+                                        <FontAwesomeIcon icon={faPlus} size="lg" />
+                                    </button>
+                                )}
+                            </h3>
+                            {course && course.lessons && (
+                                <CSSTransition
+                                    in={isLessonsOpen}
+                                    timeout={300}
+                                    classNames="section"
+                                    unmountOnExit
+                                    nodeRef={lessonsRef}
+                                >
+                                    <div className="bg-gray-800 p-4 rounded-lg" ref={lessonsRef}>
+                                        {course.lessons.map((lesson, index) => (
+                                            <div key={index} className="flex justify-between items-center mb-2">
+                                                <Link to={lesson.link} className="flex-grow text-left">
+                                                    <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                                        <FontAwesomeIcon
+                                                            icon={faBookOpen}
+                                                            size="lg"
+                                                            className="text-gray-600"
+                                                        />{' '}
+                                                        {lesson.name}
+                                                    </button>
+                                                </Link>
+                                                {isAuthor && (
+                                                    <button onClick={() => handleEditLesson(lesson)} className="text-gray-300 hover:text-gray-400">
+                                                        <FontAwesomeIcon icon={faEdit} size="lg" />
+                                                    </button>
+                                                )}
+                                                <FontAwesomeIcon
+                                                    icon={faCheckCircle}
+                                                    className={`ml-2 ${lesson.completed ? 'text-teal-600' : 'text-gray-500'}`}
+                                                    size="2x"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CSSTransition>
+                            )}
+                        </div>
+                        <div className="mb-6">
+                            <h3
+                                className="text-2xl font-bold mb-4 cursor-pointer flex justify-center gap-2"
+                                onClick={() => setIsTestsOpen(!isTestsOpen)}
+                            >
+                                Tests
+                                {isAuthor && (
+                                    <button onClick={() => handleAddTest()} className="text-gray-300 hover:text-gray-400">
+                                        <FontAwesomeIcon icon={faPlus} size="lg" />
+                                    </button>
+                                )}
+                            </h3>
+                            {course && course.tests && (
+                                <CSSTransition
+                                    in={isTestsOpen}
+                                    timeout={300}
+                                    classNames="section"
+                                    unmountOnExit
+                                    nodeRef={testsRef}
+                                >
+                                    <div className="bg-gray-800 p-4 rounded-lg" ref={testsRef}>
+                                        {course.tests.map((test, index) => (
+                                            <div key={index} className="flex justify-between items-center mb-2">
+                                                <Link to={test.link} className="flex-grow text-left">
+                                                    <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                                        <FontAwesomeIcon
+                                                            icon={faClipboardList}
+                                                            size="lg"
+                                                            className="text-gray-600"
+                                                        />{' '}
+                                                        {test.name}
+                                                    </button>
+                                                </Link>
+                                                {isAuthor && (
+                                                    <button onClick={() => handleEditTest(test)} className="text-gray-300 hover:text-gray-400">
+                                                        <FontAwesomeIcon icon={faEdit} size="lg" />
+                                                    </button>
+                                                )}
+                                                <FontAwesomeIcon
+                                                    icon={faCheckCircle}
+                                                    className={`ml-2 ${test.completed ? 'text-teal-600' : 'text-gray-500'}`}
+                                                    size="2x"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CSSTransition>
+                            )}
+                        </div>
+                        <div className="mb-6">
+                            <h3
+                                className="text-2xl font-bold mb-4 cursor-pointer flex justify-center gap-2"
+                                onClick={() => setIsFilesOpen(!isFilesOpen)}
+                            >
+                                Additional Resources
+                                {isAuthor && (
+                                    <button onClick={() => handleAddResource()} className="text-gray-300 hover:text-gray-400">
+                                        <FontAwesomeIcon icon={faPlus} size="lg" />
+                                    </button>
+                                )}
+                            </h3>
+                            {course && course.files && (
+                                <CSSTransition
+                                    in={isFilesOpen}
+                                    timeout={300}
+                                    classNames="section"
+                                    unmountOnExit
+                                    nodeRef={filesRef}
+                                >
+                                    <div className="bg-gray-800 p-4 rounded-lg" ref={filesRef}>
+                                        {course.files.map((file, index) => (
+                                            <div key={index} className="flex justify-between items-center mb-2">
+                                                <a
+                                                    href={file.link}
+                                                    className="flex-grow text-left"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                                        <FontAwesomeIcon
+                                                            icon={faFileAlt}
+                                                            size="lg"
+                                                            className="text-gray-600"
+                                                        />{' '}
+                                                        {file.name}
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CSSTransition>
+                            )}
                         </div>
                     </div>
-                ))}
-            </div>
+                </>
+            )}
         </div>
     );
 };

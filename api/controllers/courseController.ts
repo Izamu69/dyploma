@@ -82,4 +82,18 @@ const patchCourse = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getCourses, createCourse, updateCourse, deleteCourse, patchCourse };
+const getCourseById = async (req: Request, res: Response): Promise<void> => {
+  const courseId = req.params.id;
+  try {
+    const course: ICourse | null = await Course.findById(courseId);
+    if (!course) {
+      res.status(404).json({ success: false, message: "Course not found" });
+      return;
+    }
+    res.status(200).json({ success: true, course });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching course", error: error });
+  }
+};
+
+export { getCourses, createCourse, updateCourse, deleteCourse, patchCourse, getCourseById };
