@@ -9,10 +9,14 @@ const Dashboard = () => {
     const [takenTests, setTakenTests] = useState([]);
     const [createdCourses, setCreatedCourses] = useState([]);
     const [createdTests, setCreatedTests] = useState([]);
+    const [userName, setUserName] = useState('');
 
     useEffect(() => {
-        // Fetch the data for enrolled courses, taken tests, created courses, and created tests
-        // For demonstration purposes, using static data
+        const userDataString = localStorage.getItem('user');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setUserName(userData.userName);
+        }
 
         setEnrolledCourses([
             { id: 1, name: 'Foundations Course' },
@@ -72,7 +76,7 @@ const Dashboard = () => {
                                 </Link>
                             </div>
                         ))}
-                        <Link to="/create-course" className="text-lg bg-transparent p-4 m-0 border-none text-teal-600 hover:text-teal-400 hover:rounded-lg">
+                        <Link to="/createcourse" className="text-lg bg-transparent p-4 m-0 border-none text-teal-600 hover:text-teal-400 hover:rounded-lg">
                             <FontAwesomeIcon icon={faPlusCircle} size='lg' /> Create New Course
                         </Link>
                     </div>
@@ -87,7 +91,7 @@ const Dashboard = () => {
                                 </Link>
                             </div>
                         ))}
-                        <Link to="/create-test" className="text-lg bg-transparent p-4 m-0 border-none text-teal-600 hover:text-teal-400 hover:rounded-lg">
+                        <Link to="/createtest" className="text-lg bg-transparent p-4 m-0 border-none text-teal-600 hover:text-teal-400 hover:rounded-lg">
                             <FontAwesomeIcon icon={faPlusCircle} size='lg' /> Create New Test
                         </Link>
                     </div>
@@ -99,7 +103,7 @@ const Dashboard = () => {
 
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
-            <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
+            <h1 className="text-4xl font-bold mb-8">Welcome, {userName}</h1>
             <div className="flex flex-col md:flex-row mb-8">
                 <button onClick={() => setActiveTab('enrolledCourses')} className={`px-4 py-2 mr-2 mb-4 ${activeTab === 'enrolledCourses' ? 'bg-teal-600' : 'bg-gray-800'} text-gray-300 rounded-lg`}>
                     Enrolled Courses

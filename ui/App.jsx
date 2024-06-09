@@ -13,27 +13,30 @@ import CoursePage from './components/CoursePage';
 import CreateCoursePage from './components/CreateCoursePage';
 import Dashboard from './components/Dashboard';
 import CourseListPage from './components/CourseListPage';
+import AuthProvider from './components/AuthContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="bg-gray-900 text-gray-300 min-h-screen">
-        <Header />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/signin" element={<SignInForm />} />
-          <Route path="/signup" element={<SignUpForm />} />
-          <Route path="/settings" element={<UserSettings />} />
-          <Route path="/createtest" element={<CreateTest />} />
-          <Route path="/createlesson" element={<LessonCreator />} />
-          <Route path="/create" element={<ChooseCreation />} />
-          <Route path="/course" element={<CourseListPage />} />
-          <Route path="/course/:courseId" element={<CoursePage />} />
-          <Route path="/createcourse" element={<CreateCoursePage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <div className="bg-gray-900 text-gray-300 min-h-screen">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/signin" element={<SignInForm />} />
+            <Route path="/signup" element={<SignUpForm />} />
+            <Route path="/settings" element={<UserSettings />} />
+            <Route path="/createtest" element={<CreateTest />} />
+            <Route path="/createlesson" element={<LessonCreator />} />
+            <Route path="/create" element={<ChooseCreation />} />
+            <Route path="/course" element={<CourseListPage />} />
+            <Route path="/course/:courseId" element={<CoursePage />} />
+            <Route path="/createcourse" element={<CreateCoursePage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

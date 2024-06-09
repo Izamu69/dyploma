@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 import './Header.css';
-import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const { isAuthenticated, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -22,6 +25,11 @@ const Header = () => {
       setIsOpen(false);
       setShowDropdown(false);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/')
   };
 
   return (
@@ -45,36 +53,55 @@ const Header = () => {
               }`}
             onClick={(e) => e.stopPropagation()}
           >
-            <a href="/dashboard" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
-              Dashboard
-            </a>
-            <a href="/course" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
-              Browse
-            </a>
-            <div className="flex items-center space-x-4">
-              <div className="relative"><FontAwesomeIcon icon={faPlus} onClick={toggleDropdown} className="w-5 h-5 cursor-pointer hover:text-white" />
-                {showDropdown && (
-                  <div className="absolute right-0 mt-2 bg-gray-800 text-gray-300 p-2 rounded-lg shadow-md">
-                    <a href="/createcourse" className="block py-1 px-2 hover:text-white font-bold hover:underline">
-                      Course
-                    </a>
-                    <a href="/createtest" className="block py-1 px-2 hover:text-white font-bold hover:underline">
-                      Test
-                    </a>
+            {isAuthenticated ? (
+              <>
+                <Link to="/dashboard" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                  Dashboard
+                </Link>
+                <Link to="/course" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                  Browse
+                </Link>
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <FontAwesomeIcon icon={faPlus} onClick={toggleDropdown} className="w-5 h-5 cursor-pointer hover:text-white" />
+                    {showDropdown && (
+                      <div className="absolute right-0 mt-2 bg-gray-800 text-gray-300 p-2 rounded-lg shadow-md">
+                        <Link to="/createcourse" className="block py-1 px-2 hover:text-white font-bold hover:underline">
+                          Course
+                        </Link>
+                        <Link to="/createtest" className="block py-1 px-2 hover:text-white font-bold hover:underline">
+                          Test
+                        </Link>
+                      </div>
+                    )}
                   </div>
-                )}</div>
-              <a href="/settings" className="hover:text-white hover:underline font-bold">
-                Settings
-              </a>
-              <Link to="/signup">
-                <button
-                  className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
-                  type="button"
-                >
-                  Sign up
-                </button>
-              </Link>
-            </div>
+                  <Link to="/settings" className="hover:text-white hover:underline font-bold">
+                    Settings
+                  </Link>
+                  <button
+                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
+                    type="button"
+                    onClick={handleLogout}
+                  >
+                    Log out
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className='flex items-center'>
+                <Link to="/course" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                  Browse
+                </Link>
+                <Link to="/signin">
+                  <button
+                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
+                    type="button"
+                  >
+                    Sign in
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </nav>
       </div>

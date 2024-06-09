@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
 const SignInForm = () => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
     try {
@@ -24,9 +26,8 @@ const SignInForm = () => {
       const data = await response.json();
       const { token, user } = data;
 
-      // Store the token in local storage
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      // Log in the user using the context method
+      login(user, token);
 
       // Redirect to the dashboard or any other page
       navigate('/dashboard');

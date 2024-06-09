@@ -56,6 +56,14 @@ const CoursePage = () => {
         return <div>Error: {error.message}</div>;
     }
 
+    const handleAddLesson = () => {
+        navigate("/createlesson");
+    };
+
+    const handleAddTest = () => {
+        navigate("/createtest");
+    };
+
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
             {course && (
