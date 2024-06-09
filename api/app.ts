@@ -9,6 +9,7 @@ import Test from "./models/test";
 import Question from "./models/question";
 import Course from "./models/course";
 import courseRoutes from "./routes/courseRoute";
+import lessonRoutes from "./routes/lessonRoute";
 
 const app = express();
 app.use(helmet());
@@ -32,6 +33,7 @@ app.use(userRoutes);
 app.use(questionRoutes);
 app.use(testRoutes);
 app.use(courseRoutes);
+app.use(lessonRoutes);
 
 const url: string = `mongodb://mongodb:27017/mydb`;
 mongoose.connect(url)
