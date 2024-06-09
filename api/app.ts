@@ -11,6 +11,7 @@ import Course from "./models/course";
 import courseRoutes from "./routes/courseRoute";
 import lessonRoutes from "./routes/lessonRoute";
 import Lesson from "./models/lesson";
+import seedDatabase from "./controllers/seedController";
 
 const app = express();
 app.use(helmet());
@@ -37,6 +38,7 @@ app.use(courseRoutes);
 app.use(lessonRoutes);
 
 const url: string = `mongodb://mongodb:27017/mydb`;
+
 mongoose.connect(url)
   .then(async () => {
     console.log("Connected to MongoDB");
@@ -48,6 +50,24 @@ mongoose.connect(url)
         Course.createCollection(),
         Lesson.createCollection()
       ]);
+      const admin = await User.findOne({ email: "admin@example.com" });
+      console.log(admin)
+      if(!admin) {
+        const req = {} as Request;
+        const res = {} as Response;
+
+        res.status = (code: number) => {
+          console.log(`Status: ${code}`);
+          return res;
+        };
+        
+        res.json = (data: any) => {
+          console.log("Response data:", data);
+          return res;
+        };
+
+        await seedDatabase(req, res);
+      }
       console.log("All collections created");
       app.listen(PORT, () =>
         console.log(`Server running on http://localhost:${PORT}`)
