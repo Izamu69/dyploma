@@ -10,6 +10,7 @@ import Question from "./models/question";
 import Course from "./models/course";
 import courseRoutes from "./routes/courseRoute";
 import lessonRoutes from "./routes/lessonRoute";
+import Lesson from "./models/lesson";
 
 const app = express();
 app.use(helmet());
@@ -44,7 +45,8 @@ mongoose.connect(url)
         User.createCollection(),
         Question.createCollection(),
         Test.createCollection(),
-        Course.createCollection()
+        Course.createCollection(),
+        Lesson.createCollection()
       ]);
       console.log("All collections created");
       app.listen(PORT, () =>

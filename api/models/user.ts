@@ -10,6 +10,7 @@ export interface IUser extends Document {
   password: string;
   email: string;
   files?: string[];
+  testsTaken?: { testId: ObjectId; grade: number }[];
 }
 
 const userSchema: Schema = new Schema(
@@ -39,7 +40,13 @@ const userSchema: Schema = new Schema(
       type: String,
       required: false,
     },
-    
+    testsTaken: [
+      {
+        testId: { type: Schema.Types.ObjectId, 
+          ref: "Test", },
+        grade: { type: Number, required: true }
+      }
+    ],
   },
   { timestamps: true }
 );
