@@ -63,20 +63,43 @@ const seedDatabase = async (req: Request, res: Response): Promise<void> => {
       }
     } as Request;
 
+    const question3Request = {
+      body: {
+        question: "Match the capitals?",
+        subquestions:[{ pictures: false, content: "France" },{ pictures: false, content: "Ukraine" }],
+        answers: [{ pictures: false, content: "Kyiv" },{ pictures: false, content: "Paris" },{ pictures: false, content: "New York" }],
+        questionAnswerDependence: [2,1],
+        suiTable: true,
+      }
+    } as Request;
+
+    const question4Request = {
+      body: {
+        question: "What is 3 + 2?",
+        answers: [{ pictures: false, content: "4" },{ pictures: false, content: "3" },{ pictures: false, content: "5" }],
+        questionAnswerDependence: [2],
+        suiTable: false,
+      }
+    } as Request;
+
     await createQuestion(question1Request, res);
     await createQuestion(question2Request, res);
+    await createQuestion(question3Request, res);
+    await createQuestion(question4Request, res);
 
     const question1 = await Question.findOne({ question: "What is 2 + 2?" });
-    const question2 = await Question.findOne({ question: "What is the capital of France?" });
+    const question2 = await Question.findOne({ question: "Match the capitals?" });
+    const question3 = await Question.findOne({ question: "Match the capitals?" });
+    const question4 = await Question.findOne({ question: "What is 3 + 2?" });
 
-    if (!question1 || !question2) {
+    if (!question1 || !question2 ||!question3 ||!question4) {
       throw new Error("Questions not found after creation");
     }
 
     const test1Request = {
       body: {
         testName: "Math Test",
-        questionIds: [question1._id]
+        questionIds: [question1._id, question3._id, question4._id]
       }
     } as Request;
 

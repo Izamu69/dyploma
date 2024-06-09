@@ -82,4 +82,18 @@ const patchTest = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getTests, createTest, updateTest, deleteTest, patchTest };
+const getTestById = async (req: Request, res: Response): Promise<void> => {
+  const testId = req.params.id;
+  try {
+    const test: ITest | null = await Test.findById(testId);
+    if (!test) {
+      res.status(404).json({ success: false, message: "Test not found" });
+      return;
+    }
+    res.status(200).json({ success: true, test });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching test", error: error });
+  }
+};
+
+export { getTests, createTest, updateTest, deleteTest, patchTest, getTestById };

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import helmet from "helmet";
 import userRoutes from "./routes/userRoute";
 import questionRoutes from "./routes/questionRoute";
-import testRoutes from "./routes/testController";
+import testRoutes from "./routes/testRoute";
 import User from "./models/user";
 import Test from "./models/test";
 import Question from "./models/question";

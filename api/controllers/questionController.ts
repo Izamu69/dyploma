@@ -85,4 +85,18 @@ const patchQuestion = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getQuestions, createQuestion, updateQuestion, deleteQuestion, patchQuestion };
+const getQuestionById = async (req: Request, res: Response): Promise<void> => {
+  const questionId = req.params.id;
+  try {
+    const question: IQuestion | null = await Question.findById(questionId);
+    if (!question) {
+      res.status(404).json({ message: "Question not found" });
+      return;
+    }
+    res.status(200).json({ question });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching question" });
+  }
+};
+
+export { getQuestions, createQuestion, updateQuestion, deleteQuestion, patchQuestion, getQuestionById };

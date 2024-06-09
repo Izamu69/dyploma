@@ -1,0 +1,68 @@
+.bg-gray-900 {
+    background-color: #1a202c;
+}
+
+.text-gray-300 {
+    color: #d1d5db;
+}
+
+.min-h-screen {
+    min-height: 100vh;
+}
+
+.p-8 {
+    padding: 2rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.bg-gray-800 {
+    background-color: #2d3748;
+}
+
+.p-4, .p-6 {
+    padding: 1rem;
+    padding: 1.5rem;
+}
+
+.rounded-full, .rounded-lg {
+    border-radius: 9999px;
+    border-radius: 0.5rem;
+}
+
+.text-teal-600 {
+    color: #319795;
+}
+
+.text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.max-w-4xl {
+    max-width: 64rem;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}

@@ -14,6 +14,8 @@ import CreateCoursePage from './components/CreateCoursePage';
 import Dashboard from './components/Dashboard';
 import CourseListPage from './components/CourseListPage';
 import AuthProvider from './components/AuthContext';
+import LessonPage from './components/LessonPage';
+import CompleteTest from './components/CompleteTest';
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
             <Route path="/course/:courseId" element={<CoursePage />} />
             <Route path="/createcourse" element={<CreateCoursePage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/lesson/:lessonId" element={<LessonPage />} />
+            <Route path="/test/:testId" element={<CompleteTest />} />
           </Routes>
         </div>
       </BrowserRouter>
