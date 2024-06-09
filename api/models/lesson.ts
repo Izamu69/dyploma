@@ -27,9 +27,10 @@ const lessonSchema: Schema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "Test",
+        required: false,
       },
     ],
-    files: [{type: String}],
+    files: [{type: String, required: false,}],
     authorId: {
       type: Schema.Types.ObjectId, 
       ref: "User", 

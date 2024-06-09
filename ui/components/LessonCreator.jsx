@@ -77,6 +77,8 @@ const LessonCreator = () => {
             body: JSON.stringify({
                 lessonName,
                 sections: sectionArrays,
+                additionalResources,
+                tests,
                 authorId,
             }),
         })
