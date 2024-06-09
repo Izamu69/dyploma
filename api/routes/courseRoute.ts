@@ -5,7 +5,8 @@ import {
   updateCourse,
   deleteCourse,
   patchCourse,
-  getCourseById
+  getCourseById,
+  addLessonToCourse
 } from "../controllers/courseController";
 
 const courseRoutes: Router = Router();
@@ -16,5 +17,6 @@ courseRoutes.post("/courses", createCourse);
 courseRoutes.put("/courses/:id", updateCourse);
 courseRoutes.delete("/courses/:id", deleteCourse);
 courseRoutes.patch("/courses/:id", patchCourse);
+courseRoutes.patch('/:id/lessons', addLessonToCourse);
 
 export default courseRoutes;

@@ -23,7 +23,7 @@ const CoursePage = () => {
     const filesRef = useRef(null);
 
     useEffect(() => {
-        const fetchCourse = async () => {
+        const fetchCourseAndLessons = async () => {
             try {
                 const response = await fetch(`http://localhost:3000/courses/${courseId}`);
                 if (!response.ok) {
@@ -31,6 +31,18 @@ const CoursePage = () => {
                 }
                 const data = await response.json();
                 setCourse(data.course);
+
+                // Fetch lessons associated with the course
+                const lessonPromises = data.course.lessonIds
+                    .filter((lessonId) => lessonId !== null && lessonId !== undefined) // Filter out null and undefined values
+                    .map(async (lessonId) => {
+                        const lessonResponse = await fetch(`http://localhost:3000/lessons/${lessonId}`);
+                        const lessonData = await lessonResponse.json();
+                        return lessonData.lesson;
+                    });
+                const lessons = await Promise.all(lessonPromises);
+                setCourse((prevCourse) => ({ ...prevCourse, lessons }));
+
                 setLoading(false);
 
                 const userDataString = localStorage.getItem('user');
@@ -45,7 +57,7 @@ const CoursePage = () => {
             }
         };
 
-        fetchCourse();
+        fetchCourseAndLessons();
     }, [courseId, isAuthor]);
 
     if (loading) {
@@ -56,8 +68,9 @@ const CoursePage = () => {
         return <div>Error: {error.message}</div>;
     }
 
+
     const handleAddLesson = () => {
-        navigate("/createlesson");
+        navigate(`/course/${courseId}/createlesson`);
     };
 
     const handleAddTest = () => {
@@ -98,14 +111,14 @@ const CoursePage = () => {
                                     <div className="bg-gray-800 p-4 rounded-lg" ref={lessonsRef}>
                                         {course.lessons.map((lesson, index) => (
                                             <div key={index} className="flex justify-between items-center mb-2">
-                                                <Link to={lesson.link} className="flex-grow text-left">
+                                                <Link to={`/lesson/${lesson._id}`} className="flex-grow text-left">
                                                     <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
                                                         <FontAwesomeIcon
                                                             icon={faBookOpen}
                                                             size="lg"
                                                             className="text-gray-600"
                                                         />{' '}
-                                                        {lesson.name}
+                                                        {lesson.lessonName}
                                                     </button>
                                                 </Link>
                                                 {isAuthor && (

@@ -1,12 +1,18 @@
-import express from "express";
-import { getLessons, createLesson, updateLesson, deleteLesson, getLessonById } from "../controllers/lessonController";
+import { Router } from "express";
+import {
+  getLessons,
+  createLesson,
+  updateLesson,
+  deleteLesson,
+  getLessonById
+} from "../controllers/lessonController";
 
-const router = express.Router();
+const lessonRoutes: Router = Router();
 
-router.get("/lessons", getLessons);
-router.post("/lessons", createLesson);
-router.put("/lessons/:id", updateLesson);
-router.delete("/lessons/:id", deleteLesson);
-router.get("/lessons/:id", getLessonById);
+lessonRoutes.get("/lessons", getLessons);
+lessonRoutes.get("/lessons/:id", getLessonById);
+lessonRoutes.post("/lessons", createLesson);
+lessonRoutes.put("/lessons/:id", updateLesson);
+lessonRoutes.delete("/lessons/:id", deleteLesson);
 
-export default router;
+export default lessonRoutes;
