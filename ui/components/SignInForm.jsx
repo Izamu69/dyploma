@@ -73,12 +73,6 @@ const SignInForm = () => {
               required
             />
           </div>
-          <div className="mb-4 flex items-center justify-between">
-            <label className="flex items-center text-gray-400">
-              <input className="mr-2 leading-tight accent-teal-600 rounded" type="checkbox" />
-              <span className="text-sm">Remember me</span>
-            </label>
-          </div>
           <button
             className="w-full bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
             type="button"

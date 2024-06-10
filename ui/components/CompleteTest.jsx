@@ -6,6 +6,7 @@ const CompleteTest = () => {
     const [test, setTest] = useState(null);
     const [questions, setQuestions] = useState([]);
     const [answers, setAnswers] = useState({});
+    const [results, setResults] = useState(null);
 
     // Fetch test data based on testId
     useEffect(() => {
@@ -71,10 +72,42 @@ const CompleteTest = () => {
         }));
     };
 
+    // Convert userAnswers object to a readable string format
+    const formatUserAnswers = (userAnswers) => {
+        if (typeof userAnswers === 'object' && !Array.isArray(userAnswers)) {
+            return Object.entries(userAnswers)
+                .map(([subquestionIndex, answerIndex]) => `Subquestion ${parseInt(subquestionIndex) + 1}: Option ${parseInt(answerIndex) + 1}`)
+                .join(', ');
+        }
+        return Array.isArray(userAnswers) ? userAnswers.join(', ') : userAnswers.toString();
+    };
+
     // Handler for submitting the test
     const handleSubmitTest = () => {
-        // Send answers to server or handle locally
-        console.log('Submitted answers:', answers);
+        const results = questions.map((question, questionIndex) => {
+            const correctAnswers = question.questionAnswerDependence || []; // Assuming correct answers are stored in questionAnswerDependence
+            const userAnswers = answers[questionIndex];
+            let isCorrect;
+
+            if (Array.isArray(userAnswers)) {
+                isCorrect = correctAnswers.every(answer => userAnswers.includes(answer)) &&
+                            userAnswers.every(answer => correctAnswers.includes(answer));
+            } else if (typeof userAnswers === 'object') {
+                isCorrect = Object.values(userAnswers).every((answer, index) => answer === correctAnswers[index]);
+            } else {
+                isCorrect = correctAnswers.includes(userAnswers);
+            }
+
+            return {
+                question: question.question,
+                correctAnswers,
+                userAnswers,
+                isCorrect
+            };
+        });
+
+        setResults(results);
+        console.log('Results:', results);
     };
 
     if (!test || questions.length === 0) {
@@ -132,7 +165,9 @@ const CompleteTest = () => {
                                             id={`option-${questionIndex}-${answerIndex}`}
                                             name={`question-${questionIndex}`}
                                             value={answerIndex}
-                                            checked={answers[questionIndex] === answerIndex}
+                                            checked={Array.isArray(answers[questionIndex])
+                                                ? answers[questionIndex].includes(answerIndex)
+                                                : answers[questionIndex] === answerIndex}
                                             onChange={() => handleOptionSelect(questionIndex, answerIndex)}
                                             className="form-checkbox h-5 w-5 mr-2 accent-teal-600"
                                         />
@@ -144,7 +179,20 @@ const CompleteTest = () => {
                         )}
                     </div>
                 ))}
-                <button onClick={handleSubmitTest} className="bg-teal-600 text-white py-2 px-4 rounded mt-6 hover:bg-teal-700">Submit Test</button>
+                <button onClick={handleSubmitTest} className="bg-teal-600 text-white py-2 px-4 rounded mt-6 hover:bg-teal-700 font-bold">Submit Test</button>
+                {results && (
+                    <div className="mt-8">
+                        <h2 className="text-3xl font-bold mb-4">Results:</h2>
+                        {results.map((result, index) => (
+                            <div key={index} className={`p-4 rounded mb-4 ${result.isCorrect ? 'bg-green-700' : 'bg-red-700'}`}>
+                                <h3 className="text-xl font-bold">Question {index + 1}: {result.question}</h3>
+                                <p className="mt-2 font-bold">Your Answers: {formatUserAnswers(result.userAnswers)}</p>
+                                <p className="mt-2 font-bold">Correct Answers: {result.correctAnswers.join(', ')}</p>
+                                <p className="mt-2 font-bold">{result.isCorrect ? 'Correct!' : 'Incorrect'}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
