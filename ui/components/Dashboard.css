@@ -1,0 +1,12 @@
+.tabs {
+    transition: max-height 0.3s ease-out;
+}
+
+.tabs-visible {
+    max-height: 2000px;
+}
+
+.tabs-hidden {
+    max-height: 0;
+    overflow: hidden; 
+}
