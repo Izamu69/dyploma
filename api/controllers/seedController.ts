@@ -48,7 +48,7 @@ const seedDatabase = async (req: Request, res: Response): Promise<void> => {
       body: {
         question: "What is 2 + 2?",
         answers: [{ pictures: false, content: "4" },{ pictures: false, content: "3" },{ pictures: false, content: "5" }],
-        questionAnswerDependence: [1],
+        questionAnswerDependence: [0],
         suiTable: false,
       }
     } as Request;
@@ -58,7 +58,7 @@ const seedDatabase = async (req: Request, res: Response): Promise<void> => {
         question: "Match the capitals?",
         subquestions:[{ pictures: false, content: "France" },{ pictures: false, content: "Ukraine" }],
         answers: [{ pictures: false, content: "Kyiv" },{ pictures: false, content: "Paris" },{ pictures: false, content: "New York" }],
-        questionAnswerDependence: [2,1],
+        questionAnswerDependence: [1,0],
         suiTable: true,
       }
     } as Request;
@@ -68,7 +68,7 @@ const seedDatabase = async (req: Request, res: Response): Promise<void> => {
         question: "Match the capitals?",
         subquestions:[{ pictures: false, content: "France" },{ pictures: false, content: "Ukraine" }],
         answers: [{ pictures: false, content: "Kyiv" },{ pictures: false, content: "Paris" },{ pictures: false, content: "New York" }],
-        questionAnswerDependence: [2,1],
+        questionAnswerDependence: [1,0],
         suiTable: true,
       }
     } as Request;

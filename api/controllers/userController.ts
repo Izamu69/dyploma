@@ -97,7 +97,6 @@ const patchUser = async (req: Request, res: Response): Promise<void> => {
 
 const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { userName, password } = req.body;
-  console.log(userName, password);
   try {
     const user: IUser | null = await User.findOne({ userName });
     if (!user) {
