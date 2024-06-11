@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBars, faTimes, faS } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import './Header.css';
@@ -36,7 +36,7 @@ const Header = () => {
     <header className="bg-gray-900 text-gray-300">
       <div className="container mx-auto flex items-center justify-between p-4">
         <Link to="/" className="flex items-center space-x-4">
-          <span className="text-white text-xl font-bold">Stason</span>
+          <span className="text-white text-2xl font-bold">Stason</span>
         </Link>
         <div className="flex items-center space-x-4 md:hidden">
           <button onClick={toggleMenu} className="focus:outline-none">

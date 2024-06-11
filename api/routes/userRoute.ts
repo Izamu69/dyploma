@@ -7,6 +7,7 @@ import {
   patchUser,
   loginUser,
   checkPassword,
+  addTestResult,
 } from "../controllers/userController";
 
 const userRoutes: Router = Router();
@@ -18,5 +19,6 @@ userRoutes.delete("/users/:id", deleteUser);
 userRoutes.patch("/users/:id", patchUser);
 userRoutes.post("/users/login", loginUser);
 userRoutes.post("/users/:id/checkPassword", checkPassword);
+userRoutes.post("/users/:id/tests", addTestResult);
 
 export default userRoutes;

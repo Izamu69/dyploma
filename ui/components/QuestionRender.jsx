@@ -56,7 +56,7 @@ const QuestionRenderer = ({ questions, handleAnswerSelection, mode = 'test' }) =
     };
 
     return (
-        <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
+        <div className="bg-gray-900 text-gray-300 p-8">
             <div className="max-w-4xl mx-auto">
                 {questions.map((question) => (
                     <div key={question._id} className="bg-gray-800 p-6 rounded-lg mb-4">

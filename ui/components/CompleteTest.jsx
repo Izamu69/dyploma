@@ -10,6 +10,14 @@ const CompleteTest = () => {
     const [results, setResults] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigate();
+    const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        const storedResults = JSON.parse(localStorage.getItem('user'));
+        if (storedResults) {
+            setUserId(storedResults._id);
+        }
+    }, []);
 
     const handleContinue = () => {
         sessionStorage.removeItem('testResults');
@@ -79,7 +87,7 @@ const CompleteTest = () => {
         }));
     };
 
-    const handleSubmitTest = () => {
+    const handleSubmitTest = async () => {
         const results = questions.map((question, questionIndex) => {
             const correctAnswers = question.questionAnswerDependence || [];
             const userAnswers = answers[question._id];
@@ -88,7 +96,7 @@ const CompleteTest = () => {
             if (Array.isArray(userAnswers)) {
                 isCorrect = correctAnswers.every(answer => userAnswers.includes(answer)) &&
                     userAnswers.every(answer => correctAnswers.includes(answer));
-            }else {
+            } else {
                 isCorrect = correctAnswers.includes(userAnswers);
             }
 
@@ -103,6 +111,32 @@ const CompleteTest = () => {
         setResults(results);
         setIsSubmitted(true);
         sessionStorage.setItem('testResults', JSON.stringify(results));
+
+        const totalCorrectQuestions = results.filter(result => result.isCorrect).length;
+        const totalQuestions = questions.length;
+        const percentageCorrect = totalQuestions > 0 ? ((totalCorrectQuestions / totalQuestions) * 100).toFixed(0) : 0;
+
+        try {
+            const response = await fetch(`http://localhost:3000/users/${userId}/tests`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    testId,
+                    grade: percentageCorrect,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update test result');
+            }
+
+            const updatedUser = await response.json();
+            console.log('User updated successfully:', updatedUser);
+        } catch (error) {
+            console.error('Error updating test result:', error);
+        }
     };
 
     const totalCorrectQuestions = results ? results.filter(result => result.isCorrect).length : 0;
@@ -119,14 +153,14 @@ const CompleteTest = () => {
             <div className="max-w-4xl mx-auto">
                 {!isSubmitted ? (
                     <>
-                    <QuestionRender questions={questions} handleAnswerSelection={handleAnswerSelection} />
-                    <button onClick={handleSubmitTest} className="bg-teal-600 text-white py-2 px-4 rounded mt-6 hover:bg-teal-700 font-bold">Submit Test</button>
+                        <QuestionRender questions={questions} handleAnswerSelection={handleAnswerSelection} />
+                        <button onClick={handleSubmitTest} className="bg-teal-600 text-white py-2 px-4 rounded mt-6 hover:bg-teal-700 font-bold">Submit Test</button>
                     </>
                 ) : (
                     <div className="mt-8">
                         <h2 className="text-3xl font-bold mb-4">Results:</h2>
                         <p className="text-xl font-bold my-4">You have {totalCorrectQuestions}/{totalQuestions} correct answers.</p>
-                        <p className="text-xl font-bold my-4">Thats {percentageCorrect}%. {percentageCorrect > 50 ? 'Good Job!' : 'You can do better!'}</p>
+                        <p className="text-xl font-bold my-4">That's {percentageCorrect}%. {percentageCorrect > 50 ? 'Good Job!' : 'You can do better!'}</p>
                         {results.map((result, index) => (
                             <div key={index} className={`p-4 rounded mb-4 ${result.isCorrect ? 'bg-green-700' : 'bg-red-700'}`}>
                                 <h3 className="text-xl font-bold">Question {index + 1}: {result.question}</h3>
@@ -142,4 +176,3 @@ const CompleteTest = () => {
 };
 
 export default CompleteTest;
-

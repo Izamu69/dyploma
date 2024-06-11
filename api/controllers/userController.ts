@@ -103,13 +103,13 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
       res.status(404).json({ message: "User not found" });
       return;
     }
-    
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       res.status(401).json({ message: "Invalid password" });
       return;
     }
-    
+
     const token = jwt.sign({ userId: user._id }, "your_jwt_secret_key", { expiresIn: '1h' });
     res.status(200).json({ token, user });
   } catch (error) {
@@ -140,5 +140,26 @@ const checkPassword = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const addTestResult = async (req: Request, res: Response): Promise<void> => {
+  const userId = req.params.id;
+  const { testId, grade } = req.body;
 
-export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword };
+  try {
+    const user: IUser | null = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    user.testsTaken = user.testsTaken || [];
+    user.testsTaken.push({ testId, grade });
+
+    await user.save();
+
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating test results" });
+  }
+};
+
+export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword, addTestResult };
