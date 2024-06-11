@@ -16,6 +16,7 @@ import CourseListPage from './components/CourseListPage';
 import AuthProvider from './components/AuthContext';
 import LessonPage from './components/LessonPage';
 import CompleteTest from './components/CompleteTest';
+import TestEditor from './components/TestEditor';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/lesson/:lessonId" element={<LessonPage />} />
             <Route path="/test/:testId" element={<CompleteTest />} />
+            <Route path="/test/:testId/edit" element={<TestEditor />} />
           </Routes>
         </div>
       </BrowserRouter>

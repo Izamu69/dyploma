@@ -5,6 +5,7 @@ export interface ITest extends Document {
   associatedLessonIds: Types.ObjectId[];
   testName: string;
   questionIds: Types.ObjectId[];
+  authorId: Types.ObjectId;
 }
 
 const testSchema: Schema = new Schema(
@@ -25,6 +26,11 @@ const testSchema: Schema = new Schema(
         ref: "Question",
       },
     ],
+    authorId: {
+      type: Schema.Types.ObjectId, 
+      ref: "User", 
+      required: true,
+    },
   },
   { timestamps: true }
 );

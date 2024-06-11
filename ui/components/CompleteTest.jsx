@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const CompleteTest = () => {
+const CompleteTest = (editor) => {
     const { testId } = useParams();
     const [test, setTest] = useState(null);
     const [questions, setQuestions] = useState([]);

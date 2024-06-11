@@ -24,10 +24,10 @@ const seedDatabase = async (req: Request, res: Response): Promise<void> => {
 
     const userRequest = {
       body: {
-        userName: "regularUser",
+        userName: "user",
         firstName: "Regular",
         lastName: "User",
-        password: "userPassword123",
+        password: "1111",
         email: "user@example.com"
       }
     } as Request;
@@ -99,14 +99,16 @@ const seedDatabase = async (req: Request, res: Response): Promise<void> => {
     const test1Request = {
       body: {
         testName: "Math Test",
-        questionIds: [question1._id, question3._id, question4._id]
+        questionIds: [question1._id, question3._id, question4._id],
+        authorId: userId
       }
     } as Request;
 
     const test2Request = {
       body: {
         testName: "Geography Test",
-        questionIds: [question2._id]
+        questionIds: [question2._id],
+        authorId: userId
       }
     } as Request;
 

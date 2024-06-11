@@ -12,11 +12,12 @@ const getTests = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createTest = async (req: Request, res: Response): Promise<void> => {
-  const { testName, questionIds } = req.body as ITest;
+  const { testName, questionIds, authorId } = req.body as ITest;
   try {
     const newTest: ITest = new Test({
       testName,
       questionIds,
+      authorId
     });
     await newTest.save();
     res.status(201).json({ test: newTest });
