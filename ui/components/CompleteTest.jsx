@@ -13,16 +13,11 @@ const CompleteTest = () => {
     const [userId, setUserId] = useState('');
 
     useEffect(() => {
-        const storedResults = JSON.parse(localStorage.getItem('user'));
-        if (storedResults) {
-            setUserId(storedResults._id);
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+            setUserId(storedUser._id);
         }
     }, []);
-
-    const handleContinue = () => {
-        sessionStorage.removeItem('testResults');
-        navigate('/dashboard');
-    };
 
     useEffect(() => {
         const storedResults = JSON.parse(sessionStorage.getItem('testResults'));
@@ -36,59 +31,47 @@ const CompleteTest = () => {
         };
     }, []);
 
-    const fetchTest = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/tests/${testId}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch test data');
-            }
-            const testData = await response.json();
-            if (!testData.test) {
-                throw new Error('Invalid test data format');
-            }
-            setTest(testData.test);
-        } catch (error) {
-            console.error('Error fetching or processing test data:', error);
-        }
-    };
-
     useEffect(() => {
-        fetchTest();
-    }, [testId]);
-
-    useEffect(() => {
-        const fetchQuestions = async () => {
-            if (test && test.questionIds) {
-                try {
-                    const questionPromises = test.questionIds.map(async (questionId) => {
-                        const response = await fetch(`http://localhost:3000/questions/${questionId}`);
-                        if (!response.ok) {
-                            throw new Error(`Failed to fetch question with ID ${questionId}`);
-                        }
-                        const questionData = await response.json();
-                        return questionData.question;
-                    });
-
-                    const fetchedQuestions = await Promise.all(questionPromises);
-                    setQuestions(fetchedQuestions);
-                } catch (error) {
-                    console.error('Error fetching or processing questions:', error);
+        const fetchTestAndQuestions = async () => {
+            try {
+                const testResponse = await fetch(`http://localhost:3000/tests/${testId}`);
+                if (!testResponse.ok) {
+                    throw new Error('Failed to fetch test data');
                 }
+                const testData = await testResponse.json();
+                if (!testData.test) {
+                    throw new Error('Invalid test data format');
+                }
+                setTest(testData.test);
+
+                const questionPromises = testData.test.questionIds.map(async (questionId) => {
+                    const questionResponse = await fetch(`http://localhost:3000/questions/${questionId}`);
+                    if (!questionResponse.ok) {
+                        throw new Error(`Failed to fetch question with ID ${questionId}`);
+                    }
+                    const questionData = await questionResponse.json();
+                    return questionData.question;
+                });
+
+                const fetchedQuestions = await Promise.all(questionPromises);
+                setQuestions(fetchedQuestions);
+            } catch (error) {
+                console.error('Error fetching test or questions:', error);
             }
         };
 
-        fetchQuestions();
-    }, [test]);
+        fetchTestAndQuestions();
+    }, [testId]);
 
-    const handleAnswerSelection = (question, selectedAnswers) => {
+    const handleAnswerSelection = (questionId, selectedAnswers) => {
         setAnswers(prevAnswers => ({
             ...prevAnswers,
-            [question]: Object.values(selectedAnswers)
+            [questionId]: Object.values(selectedAnswers)
         }));
     };
 
     const handleSubmitTest = async () => {
-        const results = questions.map((question, questionIndex) => {
+        const results = questions.map((question) => {
             const correctAnswers = question.questionAnswerDependence || [];
             const userAnswers = answers[question._id];
             let isCorrect;
@@ -137,6 +120,11 @@ const CompleteTest = () => {
         } catch (error) {
             console.error('Error updating test result:', error);
         }
+    };
+
+    const handleContinue = () => {
+        sessionStorage.removeItem('testResults');
+        navigate('/dashboard');
     };
 
     const totalCorrectQuestions = results ? results.filter(result => result.isCorrect).length : 0;

@@ -152,7 +152,13 @@ const addTestResult = async (req: Request, res: Response): Promise<void> => {
     }
 
     user.testsTaken = user.testsTaken || [];
-    user.testsTaken.push({ testId, grade });
+    const existingTestIndex = user.testsTaken.findIndex(test => test.testId.toString() === testId);
+
+    if (existingTestIndex !== -1) {
+      user.testsTaken[existingTestIndex].grade = grade;
+    } else {
+      user.testsTaken.push({ testId, grade });
+    }
 
     await user.save();
 
@@ -161,5 +167,6 @@ const addTestResult = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: "Error updating test results" });
   }
 };
+
 
 export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword, addTestResult };
