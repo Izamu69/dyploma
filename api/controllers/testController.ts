@@ -4,12 +4,21 @@ import Test from "../models/test";
 
 const getTests = async (req: Request, res: Response): Promise<void> => {
   try {
-    const tests: ITest[] = await Test.find();
+    const { authorId } = req.query;
+    let tests: ITest[];
+
+    if (authorId) {
+      tests = await Test.find({ authorId });
+    } else {
+      tests = await Test.find();
+    }
+
     res.status(200).json({ tests });
   } catch (error) {
     res.status(500).json({ message: "Error fetching tests" });
   }
 };
+
 
 const createTest = async (req: Request, res: Response): Promise<void> => {
   const { testName, questionIds, authorId } = req.body as ITest;

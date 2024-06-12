@@ -29,21 +29,6 @@ const Dashboard = () => {
             { id: 2, name: 'Advanced JavaScript' },
         ]);
 
-        setCreatedCourses([
-            { id: 1, name: 'Intro to Python' },
-            { id: 2, name: 'Data Structures' },
-        ]);
-
-        setCreatedTests([
-            { id: 1, name: 'Python Basics Test' },
-            { id: 2, name: 'Algorithms Test' },
-        ]);
-
-        setUploadedFiles([
-            { id: 1, name: 'Python Basics File' },
-            { id: 2, name: 'Algorithms File' },
-        ]);
-
     }, []);
 
     useEffect(() => {
@@ -57,11 +42,35 @@ const Dashboard = () => {
                 })
                 .then(data => {
                     if (data.user) {
-                        setTakenTests(data.user.testsTaken);
+                        setTakenTests(Array.isArray(data.user.testsTaken) ? data.user.testsTaken : []);
                         //setUploadedFiles(data.user.files);
                     }
                 })
                 .catch(error => console.error('Error fetching user info:', error));
+        }
+    }, [userId]);
+
+    useEffect(() => {
+        if (userId) {
+            fetch(`http://localhost:3000/courses?authorId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    setCreatedCourses(Array.isArray(data.courses) ? data.courses : [])
+                })
+                .catch(error => {
+                    console.error('Error fetching created courses:', error);
+                    setCreatedCourses([]);
+                });
+
+            fetch(`http://localhost:3000/tests?authorId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    setCreatedTests(Array.isArray(data.tests) ? data.tests : [])
+                })
+                .catch(error => {
+                    console.error('Error fetching created tests:', error);
+                    setCreatedTests([]);
+                });
         }
     }, [userId]);
 
@@ -106,6 +115,29 @@ const Dashboard = () => {
         switch (activeTab) {
             case 'enrolledCourses':
                 itemsToDisplay = handleSearch(enrolledCourses, searchQuery);
+                break;
+            case 'takenTests':
+                itemsToDisplay = handleSearch(takenTests, searchQuery);
+                break;
+            case 'createdCourses':
+                itemsToDisplay = handleSearch(createdCourses, searchQuery);
+                break;
+            case 'createdTests':
+                itemsToDisplay = handleSearch(createdTests, searchQuery);
+                break;
+            case 'uploadedFiles':
+                itemsToDisplay = handleSearch(uploadedFiles, searchQuery);
+                break;
+            default:
+                itemsToDisplay = [];
+        }
+
+        if (!Array.isArray(itemsToDisplay)) {
+            return null;
+        }
+
+        switch (activeTab) {
+            case 'enrolledCourses':
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         {itemsToDisplay.map(course => (
@@ -118,7 +150,6 @@ const Dashboard = () => {
                     </div>
                 );
             case 'takenTests':
-                itemsToDisplay = handleSearch(takenTests, searchQuery);
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         {itemsToDisplay.map(test => (
@@ -132,39 +163,36 @@ const Dashboard = () => {
                     </div>
                 );
             case 'createdCourses':
-                itemsToDisplay = handleSearch(createdCourses, searchQuery);
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         <Link to="/createcourse" className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-teal-600 hover:text-teal-400 hover:rounded-lg">
                             <FontAwesomeIcon icon={faPlusCircle} size='lg' className="mr-2" /> Create New Course
                         </Link>
                         {itemsToDisplay.map(course => (
-                            <div key={course.id} className="mb-2">
-                                <Link to={`/course/${course.id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faBookOpen} size='lg' className="text-teal-600 mr-2" /> {course.name}
+                            <div key={course._id} className="mb-2">
+                                <Link to={`/course/${course._id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    <FontAwesomeIcon icon={faBookOpen} size='lg' className="text-teal-600 mr-2" /> {course.courseName}
                                 </Link>
                             </div>
                         ))}
                     </div>
                 );
             case 'createdTests':
-                itemsToDisplay = handleSearch(createdTests, searchQuery);
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         <Link to="/createtest" className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-teal-600 hover:text-teal-400 hover:rounded-lg">
                             <FontAwesomeIcon icon={faPlusCircle} size='lg' className="mr-2" /> Create New Test
                         </Link>
                         {itemsToDisplay.map(test => (
-                            <div key={test.id} className="mb-2">
-                                <Link to={`/test/${test.id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faTasks} size='lg' className="text-teal-600 mr-2" /> {test.name}
+                            <div key={test._id} className="mb-2">
+                                <Link to={`/test/${test._id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    <FontAwesomeIcon icon={faTasks} size='lg' className="text-teal-600 mr-2" /> {test.testName}
                                 </Link>
                             </div>
                         ))}
                     </div>
                 );
             case 'uploadedFiles':
-                itemsToDisplay = handleSearch(uploadedFiles, searchQuery);
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         <div className="mb-4">
@@ -172,8 +200,7 @@ const Dashboard = () => {
                         </div>
                         {itemsToDisplay.map(file => (
                             <div key={file.id} className="mb-2">
-                                <a href={file.url} download={file.name}
-                                    className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                <a href={file.url} target="_blank" rel="noopener noreferrer" className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
                                     <FontAwesomeIcon icon={faFileUpload} size='lg' className="text-teal-600 mr-2" /> {file.name}
                                 </a>
                             </div>

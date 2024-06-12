@@ -3,12 +3,21 @@ import Course, { ICourse } from "../models/course";
 
 const getCourses = async (req: Request, res: Response): Promise<void> => {
   try {
-    const courses: ICourse[] = await Course.find();
+    const { authorId } = req.query;
+    let courses: ICourse[];
+
+    if (authorId) {
+      courses = await Course.find({ authorId });
+    } else {
+      courses = await Course.find();
+    }
+
     res.status(200).json({ success: true, courses });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching courses", error: error });
   }
 };
+
 
 const createCourse = async (req: Request, res: Response): Promise<void> => {
   const { courseName, lessonIds, testIds, files, authorId } = req.body as ICourse;
