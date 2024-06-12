@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookOpen, faClipboardList, faTasks, faPlusCircle, faSearch, faFileUpload, faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import './Dashboard.css'; // Import CSS file for styling
+import './Dashboard.css';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('enrolledCourses');
@@ -12,24 +12,21 @@ const Dashboard = () => {
     const [createdTests, setCreatedTests] = useState([]);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [userName, setUserName] = useState('');
+    const [userId, setUserId] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-    const [tabsVisible, setTabsVisible] = useState(true); // State for managing tab visibility
+    const [tabsVisible, setTabsVisible] = useState(true);
 
     useEffect(() => {
         const userDataString = localStorage.getItem('user');
         if (userDataString) {
             const userData = JSON.parse(userDataString);
             setUserName(userData.userName);
+            setUserId(userData._id);
         }
 
         setEnrolledCourses([
             { id: 1, name: 'Foundations Course' },
             { id: 2, name: 'Advanced JavaScript' },
-        ]);
-
-        setTakenTests([
-            { id: 1, name: 'JavaScript Basics Test', score: '85%' },
-            { id: 2, name: 'React Fundamentals Test', score: '90%' },
         ]);
 
         setCreatedCourses([
@@ -42,12 +39,31 @@ const Dashboard = () => {
             { id: 2, name: 'Algorithms Test' },
         ]);
 
-        // Example uploaded files with URLs
         setUploadedFiles([
-            { id: 1, name: 'example.pdf', url: 'https://example.com/example.pdf' },
-            { id: 2, name: 'image.png', url: 'https://example.com/image.png' },
+            { id: 1, name: 'Python Basics File' },
+            { id: 2, name: 'Algorithms File' },
         ]);
+
     }, []);
+
+    useEffect(() => {
+        if (userId) {
+            fetch(`http://localhost:3000/users/${userId}/info`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.user) {
+                        setTakenTests(data.user.testsTaken);
+                        //setUploadedFiles(data.user.files);
+                    }
+                })
+                .catch(error => console.error('Error fetching user info:', error));
+        }
+    }, [userId]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -79,7 +95,7 @@ const Dashboard = () => {
             const newFile = {
                 id: uploadedFiles.length + 1,
                 name: file.name,
-                url: URL.createObjectURL(file) // This is a local URL for the uploaded file
+                url: URL.createObjectURL(file)
             };
             setUploadedFiles([...uploadedFiles, newFile]);
         }
@@ -106,11 +122,11 @@ const Dashboard = () => {
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         {itemsToDisplay.map(test => (
-                            <div key={test.id} className="flex justify-between items-center mb-2">
-                                <Link to={`/test/${test.id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faClipboardList} size='lg' className="text-teal-600 mr-2" /> {test.name}
+                            <div key={test._id} className="flex justify-between items-center mb-2">
+                                <Link to={`/test/${test.testId._id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    <FontAwesomeIcon icon={faClipboardList} size='lg' className="text-teal-600 mr-2" /> {test.testId.testName}
                                 </Link>
-                                <span className="text-teal-600 text-lg">{test.score}</span>
+                                <span className="text-teal-600 text-lg">{test.grade}</span>
                             </div>
                         ))}
                     </div>
@@ -188,7 +204,7 @@ const Dashboard = () => {
                     <button onClick={() => setActiveTab('createdCourses')} className={`px-4 py-2 mr-2 mb-4 ${activeTab === 'createdCourses' ? 'bg-teal-600' : 'bg-gray-800'} text-gray-300 rounded-lg flex items-center`}>
                         <FontAwesomeIcon icon={faBookOpen} size='lg' className="mr-2" /> Created Courses
                     </button>
-                    <button onClick={() => setActiveTab('createdTests')} className={`px-4 py-2 mr-2 mb-4 ${activeTab === 'createdTests' ? 'bg-teal-600' : 'bg-gray-800'} text-gray-300 rounded-lg flex items-center`}>
+                    <button onClick={() => setActiveTab('createdTests')} className={`px-4 py-2 mr-2 mb-4 ${activeTab === 'createdTests' ? 'bg-teal-600' : 'bg-gray-800'} text-gray-300 rounded-lg flex items=center`}>
                         <FontAwesomeIcon icon={faTasks} size='lg' className="mr-2" /> Created Tests
                     </button>
                     <button onClick={() => setActiveTab('uploadedFiles')} className={`px-4 py-2 mr-2 mb-4 ${activeTab === 'uploadedFiles' ? 'bg-teal-600' : 'bg-gray-800'} text-gray-300 rounded-lg flex items-center`}>

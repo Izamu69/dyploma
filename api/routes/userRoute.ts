@@ -8,6 +8,7 @@ import {
   loginUser,
   checkPassword,
   addTestResult,
+  getUserInfo,
 } from "../controllers/userController";
 
 const userRoutes: Router = Router();
@@ -20,5 +21,6 @@ userRoutes.patch("/users/:id", patchUser);
 userRoutes.post("/users/login", loginUser);
 userRoutes.post("/users/:id/checkPassword", checkPassword);
 userRoutes.post("/users/:id/tests", addTestResult);
+userRoutes.get("/users/:id/info", getUserInfo);
 
 export default userRoutes;
