@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faBars, faTimes, faS } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faBars, faTimes, faTachometerAlt, faCompass, faCog, faSignOutAlt, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext';
 import './Header.css';
@@ -29,7 +29,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/')
+    navigate('/');
   };
 
   return (
@@ -44,21 +44,21 @@ const Header = () => {
           </button>
         </div>
         <nav
-          className={`flex-col md:flex-row items-center space-x-6 ${isOpen ? 'flex nav-open' : 'hidden md:flex md:nav-regular'
-            }`}
+          className={`flex-col md:flex-row items-center space-x-6 ${isOpen ? 'flex nav-open' : 'hidden md:flex md:nav-regular'}`}
           onClick={handleBackdropClick}
         >
           <div
-            className={`bg-gray-900 text-gray-300 p-6 rounded-lg ${isOpen ? '' : 'hidden md:flex md:bg-transparent md:p-0 md:rounded-none'
-              }`}
+            className={`bg-gray-900 text-gray-300 p-6 rounded-lg ${isOpen ? '' : 'hidden md:flex md:bg-transparent md:p-0 md:rounded-none'}`}
             onClick={(e) => e.stopPropagation()}
           >
             {isAuthenticated ? (
               <>
                 <a href="/dashboard" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                  <FontAwesomeIcon icon={faTachometerAlt} className="mr-2" />
                   Dashboard
                 </a>
                 <a href="/browse" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                  <FontAwesomeIcon icon={faCompass} className="mr-2" />
                   Browse
                 </a>
                 <div className="flex items-center space-x-4">
@@ -76,13 +76,15 @@ const Header = () => {
                     )}
                   </div>
                   <a href="/settings" className="hover:text-white hover:underline font-bold">
+                    <FontAwesomeIcon icon={faCog} className="mr-2" />
                     Settings
                   </a>
                   <button
-                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
+                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold flex items-center"
                     type="button"
                     onClick={handleLogout}
                   >
+                    <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                     Log out
                   </button>
                 </div>
@@ -90,13 +92,15 @@ const Header = () => {
             ) : (
               <div className='flex items-center'>
                 <a href="/browse" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                  <FontAwesomeIcon icon={faCompass} className="mr-2" />
                   Browse
                 </a>
                 <Link to="/signin">
                   <button
-                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
+                    className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold flex items-center"
                     type="button"
                   >
+                    <FontAwesomeIcon icon={faSignInAlt} className="mr-2" />
                     Sign in
                   </button>
                 </Link>

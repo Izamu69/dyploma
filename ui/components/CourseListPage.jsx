@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
-const CourseListPage = () => {
+const CourseListPage = ({ authorSearchQuery }) => {
     const [courses, setCourses] = useState([]);
+    const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -28,8 +29,33 @@ const CourseListPage = () => {
         fetchCourses();
     }, []);
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/users');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch courses');
+                }
+                const data = await response.json();
+                setUsers(data.users);
+                setLoading(false);
+            } catch (err) {
+                setError(err);
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    const getAuthorName = authorId => {
+        const author = users.find(user => user._id === authorId);
+        return author ? author.userName : 'Unknown';
+    };
+
     const filteredCourses = courses.filter(course =>
-        course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
+        course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (authorSearchQuery ? getAuthorName(course.authorId).toLowerCase().includes(authorSearchQuery.toLowerCase()) : true)
     );
 
     if (loading) {
@@ -42,12 +68,6 @@ const CourseListPage = () => {
 
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
-            <div className="text-center mb-8">
-                <div className="inline-block bg-gray-800 p-4 rounded-full mb-4">
-                    <FontAwesomeIcon icon={faBookOpen} size="3x" className="text-teal-600" />
-                </div>
-                <h1 className="text-4xl font-bold">All Courses</h1>
-            </div>
             <div className="max-w-8xl mx-auto">
                 <div className="mb-8">
                     <input
@@ -62,8 +82,11 @@ const CourseListPage = () => {
                     {filteredCourses.map((course, index) => (
                         <div key={index} className="mb-4">
                             <Link to={`/course/${course._id}`} className="flex-grow text-left">
-                                <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faBookOpen} size='lg' className="text-gray-600" /> {course.courseName}
+                                <button className="w-full text-left text-xl bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    <FontAwesomeIcon icon={faBook} size='xl' className="text-gray-600" /> {course.courseName} by {getAuthorName(course.authorId)}
+                                    <div className="text-lg text-gray-500">
+                                        {course.lessonIds ? `${course.lessonIds.length} ${course.lessonIds.length === 1 ? 'lesson' : 'lessons'}` : '0 lessons'} ({Date(course.createdAt)})
+                                    </div>
                                 </button>
                             </Link>
                         </div>

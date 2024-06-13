@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTasks } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
-const TestListPage = () => {
+const TestListPage = ({ authorSearchQuery }) => {
     const [tests, setTests] = useState([]);
+    const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -28,8 +29,33 @@ const TestListPage = () => {
         fetchTests();
     }, []);
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/users');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch courses');
+                }
+                const data = await response.json();
+                setUsers(data.users);
+                setLoading(false);
+            } catch (err) {
+                setError(err);
+                setLoading(false);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    const getAuthorName = authorId => {
+        const author = users.find(user => user._id === authorId);
+        return author ? author.userName : 'Unknown';
+    };
+
     const filteredTests = tests.filter(test =>
-        test.testName.toLowerCase().includes(searchQuery.toLowerCase())
+        test.testName.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (authorSearchQuery ? getAuthorName(test.authorId).toLowerCase().includes(authorSearchQuery.toLowerCase()) : true)
     );
 
     if (loading) {
@@ -42,12 +68,6 @@ const TestListPage = () => {
 
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
-            <div className="text-center mb-8">
-                <div className="inline-block bg-gray-800 p-4 rounded-full mb-4">
-                    <FontAwesomeIcon icon={faTasks} size="3x" className="text-teal-600" />
-                </div>
-                <h1 className="text-4xl font-bold">All Tests</h1>
-            </div>
             <div className="max-w-8xl mx-auto">
                 <div className="mb-8">
                     <input
@@ -62,8 +82,8 @@ const TestListPage = () => {
                     {filteredTests.map((test, index) => (
                         <div key={index} className="mb-4">
                             <Link to={`/test/${test._id}`} className="flex-grow text-left">
-                                <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faTasks} size='lg' className="text-gray-600" /> {test.testName}
+                                <button className="w-full text-left text-xl bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    <FontAwesomeIcon icon={faTasks} size='xl' className="text-gray-600" /> {test.testName} by {getAuthorName(test.authorId)}
                                 </button>
                             </Link>
                         </div>

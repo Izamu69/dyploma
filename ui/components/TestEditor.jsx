@@ -129,8 +129,8 @@ console.log(questions.map(q => q.questionAnswerDependence).join(','));
   };
 
     return (
-        <div className="flex">
-            <div className="w-1/4 bg-gray-800 text-gray-300 p-4">
+        <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-1/4 bg-gray-900 text-gray-300 p-4">
                 <h2 className="text-2xl font-bold mb-4">Questions</h2>
                 <ul>
                     {questions.map((question) => (
@@ -162,7 +162,7 @@ console.log(questions.map(q => q.questionAnswerDependence).join(','));
                     Create New Question
                 </button>
             </div>
-            <div className="w-3/4">
+            <div className="w-full md:w-3/4">
             <QuestionRenderer
                     key={questions.map(q => q.questionAnswerDependence).join(',')}
                     questions={questions}
