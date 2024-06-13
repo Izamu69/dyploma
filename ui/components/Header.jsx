@@ -55,29 +55,29 @@ const Header = () => {
           >
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                <a href="/dashboard" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
                   Dashboard
-                </Link>
-                <Link to="/course" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                </a>
+                <a href="/browse" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
                   Browse
-                </Link>
+                </a>
                 <div className="flex items-center space-x-4">
                   <div className="relative">
                     <FontAwesomeIcon icon={faPlus} onClick={toggleDropdown} className="w-5 h-5 cursor-pointer hover:text-white" />
                     {showDropdown && (
                       <div className="absolute right-0 mt-2 bg-gray-800 text-gray-300 p-2 rounded-lg shadow-md">
-                        <Link to="/createcourse" className="block py-1 px-2 hover:text-white font-bold hover:underline">
+                        <a href="/createcourse" className="block py-1 px-2 hover:text-white font-bold hover:underline">
                           Course
-                        </Link>
-                        <Link to="/createtest" className="block py-1 px-2 hover:text-white font-bold hover:underline">
+                        </a>
+                        <a href="/createtest" className="block py-1 px-2 hover:text-white font-bold hover:underline">
                           Test
-                        </Link>
+                        </a>
                       </div>
                     )}
                   </div>
-                  <Link to="/settings" className="hover:text-white hover:underline font-bold">
+                  <a href="/settings" className="hover:text-white hover:underline font-bold">
                     Settings
-                  </Link>
+                  </a>
                   <button
                     className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"
                     type="button"
@@ -89,9 +89,9 @@ const Header = () => {
               </>
             ) : (
               <div className='flex items-center'>
-                <Link to="/course" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
+                <a href="/browse" className="hover:text-white hover:underline font-bold block mb-4 md:inline md:mt-4 md:mr-6">
                   Browse
-                </Link>
+                </a>
                 <Link to="/signin">
                   <button
                     className="bg-teal-600 text-white py-2 px-4 rounded hover:bg-teal-700 focus:outline-none focus:shadow-outline font-bold"

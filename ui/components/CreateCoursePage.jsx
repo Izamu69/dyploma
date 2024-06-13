@@ -7,7 +7,6 @@ const CreateCoursePage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Retrieve user ID from local storage
         const user = JSON.parse(localStorage.getItem('user'));
         if (user && user._id) {
             setAuthorId(user._id);

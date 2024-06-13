@@ -12,11 +12,11 @@ import ChooseCreation from './components/ChooseCreation';
 import CoursePage from './components/CoursePage';
 import CreateCoursePage from './components/CreateCoursePage';
 import Dashboard from './components/Dashboard';
-import CourseListPage from './components/CourseListPage';
 import AuthProvider from './components/AuthContext';
 import LessonPage from './components/LessonPage';
 import CompleteTest from './components/CompleteTest';
 import TestEditor from './components/TestEditor';
+import ListSelectorPage from './components/ListSelectorPage';
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
             <Route path="/createtest" element={<CreateTest />} />
             <Route path="/course/:courseId/createlesson" element={<LessonCreator />} />
             <Route path="/create" element={<ChooseCreation />} />
-            <Route path="/course" element={<CourseListPage />} />
+            <Route path="/browse" element={<ListSelectorPage />} />
             <Route path="/course/:courseId" element={<CoursePage />} />
             <Route path="/createcourse" element={<CreateCoursePage />} />
             <Route path="/dashboard" element={<Dashboard />} />
