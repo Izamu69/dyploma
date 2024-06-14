@@ -96,7 +96,7 @@ const TestListPage = ({ authorSearchQuery, sortOrder }) => {
                                 <button className="w-full text-left text-xl bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
                                     <FontAwesomeIcon icon={faTasks} size='xl' className="text-gray-600" /> {test.testName} by {getAuthorName(test.authorId)}
                                     <div className="text-lg text-gray-500">
-                                        ({formatDate(test.createdAt)})
+                                        {test.questionIds ? `${test.questionIds.length} ${test.questionIds.length === 1 ? 'question' : 'questions'}` : '0 questions'} ({formatDate(test.createdAt)})
                                     </div>
                                 </button>
                             </Link>

@@ -31,7 +31,7 @@ const ListSelectorPage = () => {
     };
 
     return (
-        <div className="bg-gray-900 text-gray-300 min-h-screen flex flex-col md:flex-row">
+        <div className="bg-gray-900 text-gray-300 min-h-screen flex flex-col md:flex-row max-w-screen-xl mx-auto">
             {/* Side Menu */}
             <div className="w-full md:w-1/4 bg-gray-900 p-4 flex flex-col items-center md:items-start md:min-h-screen">
                 <div className="text-center md:text-left mb-4">

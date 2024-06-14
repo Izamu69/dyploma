@@ -140,20 +140,31 @@ const seedDatabase = async (req: Request, res: Response): Promise<void> => {
       }
     } as Request;
 
+    const lesson3Request = {
+      body: {
+        lessonName: "Not Basic Math",
+        sections: [{ type: "text", content: "Not Math basics" }],
+        testIds: [test1._id],
+        authorId: userId
+      }
+    } as Request;
+
     await createLesson(lesson1Request, res);
     await createLesson(lesson2Request, res);
+    await createLesson(lesson3Request, res);
 
     const lesson1 = await Lesson.findOne({ lessonName: "Basic Math" });
     const lesson2 = await Lesson.findOne({ lessonName: "Basic Geography" });
+    const lesson3 = await Lesson.findOne({ lessonName: "Not Basic Math" });
 
-    if (!lesson1 || !lesson2) {
+    if (!lesson1 || !lesson2 || !lesson3) {
       throw new Error("Lessons not found after creation");
     }
 
     const course1Request = {
       body: {
         courseName: "Math 101",
-        lessonIds: [lesson1._id],
+        lessonIds: [lesson1._id, lesson3._id],
         testIds: [test1._id],
         files: [],
         authorId: userId

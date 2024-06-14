@@ -40,7 +40,7 @@ const CreateCoursePage = () => {
     };
 
     return (
-        <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
+        <div className="bg-gray-900 text-gray-300 min-h-screen p-8 max-w-screen-xl mx-auto">
             <h1 className="text-4xl font-bold mb-8">Create a New Course</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">

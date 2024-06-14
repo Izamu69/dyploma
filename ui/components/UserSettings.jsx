@@ -229,7 +229,7 @@ const UserSettings = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row max-w-screen-xl mx-auto">
             <aside className="w-64 bg-gray-900">
                 <nav className="p-8">
                     <ul>

@@ -41,7 +41,7 @@ const CreateTest = () => {
     };
 
     return (
-        <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
+        <div className="bg-gray-900 text-gray-300 min-h-screen p-8 max-w-screen-xl mx-auto">
             <h1 className="text-4xl font-bold mb-8">Create Your Test</h1>
             <div className="mb-6">
                 <label className="block text-xl font-bold mb-2">Test Name</label>
@@ -52,7 +52,7 @@ const CreateTest = () => {
                     className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
                 />
             </div>
-            <button onClick={handleSaveTest} className="bg-teal-600 text-white py-2 px-4 rounded mt-4 hover:bg-teal-700">Save Test</button>
+            <button onClick={handleSaveTest} className="bg-teal-600 text-gray-100 rounded-lg px-6 py-3 mt-6 hover:bg-teal-700 font-bold">Save Test</button>
         </div>
     );
 };

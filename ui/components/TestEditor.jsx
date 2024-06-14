@@ -129,7 +129,7 @@ console.log(questions.map(q => q.questionAnswerDependence).join(','));
   };
 
     return (
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row max-w-screen-xl mx-auto">
             <div className="w-full md:w-1/4 bg-gray-900 text-gray-300 p-4">
                 <h2 className="text-2xl font-bold mb-4">Questions</h2>
                 <ul>

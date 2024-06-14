@@ -12,6 +12,8 @@ const CoursePage = () => {
     const [error, setError] = useState(null);
     const [isAuthor, setIsAuthor] = useState(false);
     const navigate = useNavigate();
+    const [completedLessons, setCompletedLessons] = useState([]);
+    const [userId, setUserId] = useState('');
 
     const [isLessonsOpen, setIsLessonsOpen] = useState(true);
     const [isTestsOpen, setIsTestsOpen] = useState(true);
@@ -22,6 +24,14 @@ const CoursePage = () => {
     const filesRef = useRef(null);
 
     useEffect(() => {
+        const userDataString = localStorage.getItem('user');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setUserId(userData._id);
+        }
+    }, []);
+
+    useEffect(() => {
         const fetchCourseData = async () => {
             try {
                 const response = await fetch(`http://localhost:3000/courses/${courseId}`);
@@ -30,6 +40,7 @@ const CoursePage = () => {
                 }
                 const data = await response.json();
                 setCourse(data.course);
+                setIsAuthor(userId === data.course.authorId);
 
                 const lessonPromises = data.course.lessonIds
                     .filter((lessonId) => lessonId !== null && lessonId !== undefined)
@@ -53,11 +64,16 @@ const CoursePage = () => {
 
                 setLoading(false);
 
-                const userDataString = localStorage.getItem('user');
-                if (userDataString) {
-                    const userData = JSON.parse(userDataString);
-                    const userId = userData._id;
-                    setIsAuthor(userId === data.course.authorId);
+                if (userId) {
+                    const userResponse = await fetch(`http://localhost:3000/users/${userId}/info`);
+                    const datauser = await userResponse.json();
+                    const completedLessons = datauser.user.enrolledCourses.reduce((acc, course) => {
+                        if (course.courseId._id === courseId) {
+                            return acc.concat(course.completedLessons.map(lesson => lesson._id));
+                        }
+                        return acc;
+                    }, []);
+                    setCompletedLessons(completedLessons);
                 }
             } catch (error) {
                 setError(error);
@@ -66,7 +82,11 @@ const CoursePage = () => {
         };
 
         fetchCourseData();
-    }, [courseId]);
+    }, [courseId, userId]);
+
+    const isLessonCompleted = (lessonId) => {
+        return completedLessons.includes(lessonId);
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -143,7 +163,7 @@ const CoursePage = () => {
                                                 )}
                                                 <FontAwesomeIcon
                                                     icon={faCheckCircle}
-                                                    className={`ml-2 ${lesson.completed ? 'text-teal-600' : 'text-gray-500'}`}
+                                                    className={`ml-2 ${isLessonCompleted(lesson._id) ? 'text-teal-600' : 'text-gray-500'}`}
                                                     size="2x"
                                                 />
                                             </div>
@@ -192,7 +212,7 @@ const CoursePage = () => {
                                                 )}
                                                 <FontAwesomeIcon
                                                     icon={faCheckCircle}
-                                                    className={`ml-2 ${test.completed ? 'text-teal-600' : 'text-gray-500'}`}
+                                                    className='ml-2 text-gray-500'
                                                     size="2x"
                                                 />
                                             </div>
@@ -206,12 +226,7 @@ const CoursePage = () => {
                                 className="text-2xl font-bold mb-4 cursor-pointer flex justify-center gap-2"
                                 onClick={() => setIsFilesOpen(!isFilesOpen)}
                             >
-                                Additional Resources
-                                {isAuthor && (
-                                    <button onClick={() => handleAddResource()} className="text-gray-300 hover:text-gray-400">
-                                        <FontAwesomeIcon icon={faPlus} size="lg" />
-                                    </button>
-                                )}
+                                Files
                             </h3>
                             {course.files && (
                                 <CSSTransition
@@ -225,19 +240,17 @@ const CoursePage = () => {
                                         {course.files.map((file, index) => (
                                             <div key={index} className="flex justify-between items-center mb-2">
                                                 <a
-                                                    href={file.link}
-                                                    className="flex-grow text-left"
+                                                    href={file.fileUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
+                                                    className="flex-grow text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg"
                                                 >
-                                                    <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                                        <FontAwesomeIcon
-                                                            icon={faFileAlt}
-                                                            size="lg"
-                                                            className="text-gray-600"
-                                                        />{' '}
-                                                        {file.name}
-                                                    </button>
+                                                    <FontAwesomeIcon
+                                                        icon={faFileAlt}
+                                                        size="lg"
+                                                        className="text-gray-600"
+                                                    />{' '}
+                                                    {file.fileName}
                                                 </a>
                                             </div>
                                         ))}

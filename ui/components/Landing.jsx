@@ -4,7 +4,7 @@ import { faChalkboardTeacher, faClipboardList, faUsers } from '@fortawesome/free
 
 const Landing = () => {
     return (
-        <div className='pt-16'>
+        <div className='pt-16 max-w-screen-xl mx-auto'>
             {/* Hero Section */}
             <section className="bg-teal-600 text-white py-20 rounded-lg">
                 <div className="container mx-auto text-center">

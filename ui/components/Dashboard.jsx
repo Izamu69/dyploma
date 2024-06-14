@@ -38,7 +38,6 @@ const Dashboard = () => {
                     if (data.user) {
                         setTakenTests(Array.isArray(data.user.testsTaken) ? data.user.testsTaken : []);
                         setEnrolledCourses(data.user.enrolledCourses || []);
-                        console.log('User info:', data.user.enrolledCourses);
                         //setUploadedFiles(data.user.files);
                     }
                 })
@@ -139,7 +138,10 @@ const Dashboard = () => {
                         {itemsToDisplay.map(course => (
                             <div key={course.courseId._id} className="mb-2">
                                 <Link to={`/course/${course.courseId._id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faBookOpen} size='lg' className="text-teal-600 mr-2" /> {course.courseId.courseName}
+                                    <div className='flex md:flex-row flex-col'>
+                                        <div><FontAwesomeIcon icon={faBookOpen} size='lg' className="text-teal-600" /> {course.courseId.courseName}</div>
+                                        <div className="text-teal-400 md:ml-6">{course.completedLessons.length}/{course.courseId.lessonIds.length} Lessons Completed</div>
+                                    </div>
                                 </Link>
                             </div>
                         ))}
@@ -149,11 +151,11 @@ const Dashboard = () => {
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         {itemsToDisplay.map(test => (
-                            <div key={test._id} className="flex justify-between items-center mb-2">
+                            <div key={test._id} className="mb-2">
                                 <Link to={`/test/${test.testId._id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
                                     <FontAwesomeIcon icon={faClipboardList} size='lg' className="text-teal-600 mr-2" /> {test.testId.testName}
+                                    <span className="text-teal-400 text-lg ml-6">{test.grade}</span>
                                 </Link>
-                                <span className="text-teal-600 text-lg">{test.grade}</span>
                             </div>
                         ))}
                     </div>
@@ -209,7 +211,7 @@ const Dashboard = () => {
     };
 
     return (
-        <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
+        <div className="bg-gray-900 text-gray-300 min-h-screen p-8 max-w-screen-xl mx-auto">
             <h1 className="text-4xl font-bold mb-8">Welcome, {userName}</h1>
             <div className="flex justify-start mb-4 md:hidden">
                 <button onClick={() => setTabsVisible(!tabsVisible)}>
