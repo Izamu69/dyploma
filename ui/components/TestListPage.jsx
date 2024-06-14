@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTasks } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
-const TestListPage = ({ authorSearchQuery }) => {
+const TestListPage = ({ authorSearchQuery, sortOrder }) => {
     const [tests, setTests] = useState([]);
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -48,12 +48,18 @@ const TestListPage = ({ authorSearchQuery }) => {
         fetchUsers();
     }, []);
 
+    const sortedTests = [...tests].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
     const getAuthorName = authorId => {
         const author = users.find(user => user._id === authorId);
         return author ? author.userName : 'Unknown';
     };
 
-    const filteredTests = tests.filter(test =>
+    const filteredTests = sortedTests.filter(test =>
         test.testName.toLowerCase().includes(searchQuery.toLowerCase()) &&
         (authorSearchQuery ? getAuthorName(test.authorId).toLowerCase().includes(authorSearchQuery.toLowerCase()) : true)
     );
@@ -65,6 +71,11 @@ const TestListPage = ({ authorSearchQuery }) => {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
 
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
@@ -84,6 +95,9 @@ const TestListPage = ({ authorSearchQuery }) => {
                             <Link to={`/test/${test._id}`} className="flex-grow text-left">
                                 <button className="w-full text-left text-xl bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
                                     <FontAwesomeIcon icon={faTasks} size='xl' className="text-gray-600" /> {test.testName} by {getAuthorName(test.authorId)}
+                                    <div className="text-lg text-gray-500">
+                                        ({formatDate(test.createdAt)})
+                                    </div>
                                 </button>
                             </Link>
                         </div>

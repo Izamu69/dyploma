@@ -23,12 +23,6 @@ const Dashboard = () => {
             setUserName(userData.userName);
             setUserId(userData._id);
         }
-
-        setEnrolledCourses([
-            { id: 1, name: 'Foundations Course' },
-            { id: 2, name: 'Advanced JavaScript' },
-        ]);
-
     }, []);
 
     useEffect(() => {
@@ -43,6 +37,8 @@ const Dashboard = () => {
                 .then(data => {
                     if (data.user) {
                         setTakenTests(Array.isArray(data.user.testsTaken) ? data.user.testsTaken : []);
+                        setEnrolledCourses(data.user.enrolledCourses || []);
+                        console.log('User info:', data.user.enrolledCourses);
                         //setUploadedFiles(data.user.files);
                     }
                 })
@@ -114,7 +110,7 @@ const Dashboard = () => {
         let itemsToDisplay = [];
         switch (activeTab) {
             case 'enrolledCourses':
-                itemsToDisplay = handleSearch(enrolledCourses, searchQuery);
+                itemsToDisplay = handleSearch(enrolledCourses, searchQuery).filter(course => course.completedLessons.length > 0);
                 break;
             case 'takenTests':
                 itemsToDisplay = handleSearch(takenTests, searchQuery);
@@ -141,9 +137,9 @@ const Dashboard = () => {
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         {itemsToDisplay.map(course => (
-                            <div key={course.id} className="mb-2">
-                                <Link to={`/course/${course.id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faBookOpen} size='lg' className="text-teal-600 mr-2" /> {course.name}
+                            <div key={course.courseId._id} className="mb-2">
+                                <Link to={`/course/${course.courseId._id}`} className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    <FontAwesomeIcon icon={faBookOpen} size='lg' className="text-teal-600 mr-2" /> {course.courseId.courseName}
                                 </Link>
                             </div>
                         ))}

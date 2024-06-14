@@ -36,7 +36,7 @@ function App() {
             <Route path="/course/:courseId" element={<CoursePage />} />
             <Route path="/createcourse" element={<CreateCoursePage />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/lesson/:lessonId" element={<LessonPage />} />
+            <Route path="/course/:courseId/lesson/:lessonId" element={<LessonPage />} />
             <Route path="/test/:testId" element={<CompleteTest />} />
             <Route path="/test/:testId/edit" element={<TestEditor />} />
           </Routes>

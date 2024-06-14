@@ -1,5 +1,4 @@
 import { model, ObjectId, Schema } from "mongoose";
-
 import { Document } from "mongoose";
 
 export interface IUser extends Document {
@@ -11,6 +10,10 @@ export interface IUser extends Document {
   email: string;
   files?: string[];
   testsTaken?: { testId: ObjectId; grade: number }[];
+  enrolledCourses?: {
+    courseId: ObjectId;
+    completedLessons: ObjectId[];
+  }[];
 }
 
 const userSchema: Schema = new Schema(
@@ -42,11 +45,16 @@ const userSchema: Schema = new Schema(
     },
     testsTaken: [
       {
-        testId: { type: Schema.Types.ObjectId, 
-          ref: "Test", },
+        testId: { type: Schema.Types.ObjectId, ref: "Test" },
         grade: { type: Number, required: true }
       }
     ],
+    enrolledCourses: [
+      {
+        courseId: { type: Schema.Types.ObjectId, ref: "Course" },
+        completedLessons: [{ type: Schema.Types.ObjectId, ref: "Lesson" }]
+      }
+    ]
   },
   { timestamps: true }
 );

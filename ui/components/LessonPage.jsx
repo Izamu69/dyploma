@@ -6,13 +6,23 @@ import { CSSTransition } from 'react-transition-group';
 import './LessonPage.css';
 
 const LessonPage = () => {
-    const { lessonId } = useParams();
+    const { courseId, lessonId } = useParams();
     const [lesson, setLesson] = useState(null);
     const [tests, setTests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isTestsOpen, setIsTestsOpen] = useState(false);
     const testsRef = React.useRef(null);
+    const [isLessonComplete, setIsLessonComplete] = useState(false);
+    const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        const userDataString = localStorage.getItem('user');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setUserId(userData._id);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchLessonData = async () => {
@@ -44,6 +54,35 @@ const LessonPage = () => {
         fetchLessonData();
     }, [lessonId]);
 
+    useEffect(() => {
+        if (userId) {
+            fetch(`http://localhost:3000/users/${userId}/info`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data.user.enrolledCourses);
+
+                    if (data && data.user && data.user.enrolledCourses) {
+                        const completedLessons = data.user.enrolledCourses.reduce((acc, course) => {
+                            return acc.concat(course.completedLessons);
+                        }, []);
+
+                        const isLessonCompleted = completedLessons.some(completedLesson =>
+                            completedLesson._id === lessonId
+                        );
+                        setIsLessonComplete(isLessonCompleted);
+                    } else {
+                        console.error('Error: User data or completed lessons not available');
+                    }
+                })
+                .catch(error => console.error('Error fetching user info:', error));
+        }
+    }, [userId, lessonId]);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -51,6 +90,27 @@ const LessonPage = () => {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
+
+    const handleMarkComplete = async () => {
+        if (userId) {
+            try {
+                const response = await fetch(`http://localhost:3000/users/${userId}/markLessonComplete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ courseId, lessonId })
+                });
+                if (response.ok) {
+                    setIsLessonComplete(true);
+                } else {
+                    throw new Error('Failed to mark lesson as complete');
+                }
+            } catch (error) {
+                console.error('Error marking lesson as complete:', error);
+            }
+        }
+    };
 
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
@@ -124,6 +184,16 @@ const LessonPage = () => {
                                 </ul>
                             </div>
                         )}
+                        <div className="mt-8 text-center">
+                            <button
+                                className={`px-4 py-2 text-lg font-bold rounded-lg ${isLessonComplete ? 'bg-teal-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
+                                onClick={handleMarkComplete}
+                                disabled={isLessonComplete}
+                            >
+                                <FontAwesomeIcon icon={faCheckCircle} size="lg" className="mr-2" />
+                                {isLessonComplete ? 'Lesson Completed' : 'Mark Lesson as Complete'}
+                            </button>
+                        </div>
                     </div>
                 </>
             )}

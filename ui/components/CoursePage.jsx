@@ -126,7 +126,7 @@ const CoursePage = () => {
                                     <div className="bg-gray-800 p-4 rounded-lg" ref={lessonsRef}>
                                         {course.lessons.map((lesson, index) => (
                                             <div key={index} className="flex justify-between items-center mb-2">
-                                                <Link to={`/lesson/${lesson._id}`} className="flex-grow text-left">
+                                                <Link to={`/course/${courseId}/lesson/${lesson._id}`} className="flex-grow text-left">
                                                     <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
                                                         <FontAwesomeIcon
                                                             icon={faBookOpen}

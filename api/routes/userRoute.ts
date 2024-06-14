@@ -9,6 +9,7 @@ import {
   checkPassword,
   addTestResult,
   getUserInfo,
+  markLessonComplete,
 } from "../controllers/userController";
 
 const userRoutes: Router = Router();
@@ -22,5 +23,6 @@ userRoutes.post("/users/login", loginUser);
 userRoutes.post("/users/:id/checkPassword", checkPassword);
 userRoutes.post("/users/:id/tests", addTestResult);
 userRoutes.get("/users/:id/info", getUserInfo);
+userRoutes.post("/users/:id/markLessonComplete", markLessonComplete);
 
 export default userRoutes;

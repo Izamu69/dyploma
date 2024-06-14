@@ -171,15 +171,62 @@ const addTestResult = async (req: Request, res: Response): Promise<void> => {
 const getUserInfo = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.id;
   try {
-    const user: IUser | null = await User.findById(userId).populate('testsTaken.testId');
+    const user: IUser | null = await User.findById(userId)
+      .populate('testsTaken.testId')
+      .populate({
+        path: 'enrolledCourses.courseId',
+        model: 'Course'
+      })
+      .populate({
+        path: 'enrolledCourses.completedLessons',
+        model: 'Lesson'
+      });
+
     if (!user) {
       res.status(404).json({ message: "User not found" });
       return;
     }
+
     res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: "Error fetching user information" });
   }
 };
 
-export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword, addTestResult, getUserInfo };
+const markLessonComplete = async (req: Request, res: Response) => {
+  const userId = req.params.id;
+  const { courseId, lessonId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.enrolledCourses) {
+      user.enrolledCourses = [];
+    }
+
+    let enrolledCourse = user.enrolledCourses.find(course => course.courseId.toString() === courseId);
+    if (!enrolledCourse) {
+      enrolledCourse = {
+        courseId,
+        completedLessons: [lessonId]
+      };
+      user.enrolledCourses.push(enrolledCourse);
+    } else {
+      if (!enrolledCourse.completedLessons.includes(lessonId)) {
+        enrolledCourse.completedLessons.push(lessonId);
+      }
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: 'Lesson marked as complete' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error marking lesson as complete', error });
+  }
+};
+
+
+export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword, addTestResult, getUserInfo, markLessonComplete };
