@@ -17,6 +17,7 @@ import LessonPage from './components/LessonPage';
 import CompleteTest from './components/CompleteTest';
 import TestEditor from './components/TestEditor';
 import ListSelectorPage from './components/ListSelectorPage';
+import LessonEditor from './components/LessonEditor';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="/course/:courseId/lesson/:lessonId" element={<LessonPage />} />
             <Route path="/test/:testId" element={<CompleteTest />} />
             <Route path="/test/:testId/edit" element={<TestEditor />} />
+            <Route path="/course/:courseId/lesson/:lessonId/edit" element={<LessonEditor />} />
           </Routes>
         </div>
       </BrowserRouter>

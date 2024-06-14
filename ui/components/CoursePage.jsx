@@ -105,7 +105,7 @@ const CoursePage = () => {
     };
 
     const handleEditLesson = (lesson) => {
-        navigate(`/lesson/${lesson._id}/edit`);
+        navigate(`/course/${courseId}/lesson/${lesson._id}/edit`);
     };
 
     const handleEditTest = (test) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookOpen, faClipboardList, faEdit, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBookOpen, faClipboardList, faEdit, faCheckCircle, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
 import './LessonPage.css';
 
@@ -15,6 +15,7 @@ const LessonPage = () => {
     const testsRef = React.useRef(null);
     const [isLessonComplete, setIsLessonComplete] = useState(false);
     const [userId, setUserId] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userDataString = localStorage.getItem('user');
@@ -112,6 +113,10 @@ const LessonPage = () => {
         }
     };
 
+    const handleViewCourse = () => {
+        navigate(`/course/${courseId}`);
+    };
+
     return (
         <div className="bg-gray-900 text-gray-300 min-h-screen p-8">
             {lesson && (
@@ -184,14 +189,21 @@ const LessonPage = () => {
                                 </ul>
                             </div>
                         )}
-                        <div className="mt-8 text-center">
+                        <div className="flex flex-row mt-8 text-center">
+                            <button
+                                className='px-4 py-2 text-lg font-bold rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 mr-6'
+                                onClick={handleViewCourse}
+                            >
+                                <FontAwesomeIcon icon={faGraduationCap} size="lg" className="mr-2" />
+                                {'View Course'}
+                            </button>
                             <button
                                 className={`px-4 py-2 text-lg font-bold rounded-lg ${isLessonComplete ? 'bg-teal-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
                                 onClick={handleMarkComplete}
                                 disabled={isLessonComplete}
                             >
                                 <FontAwesomeIcon icon={faCheckCircle} size="lg" className="mr-2" />
-                                {isLessonComplete ? 'Lesson Completed' : 'Mark Lesson as Complete'}
+                                {isLessonComplete ? 'Lesson Completed' : 'Mark Complete'}
                             </button>
                         </div>
                     </div>
