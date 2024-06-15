@@ -86,7 +86,35 @@ const Dashboard = () => {
         };
     }, []);
 
-    const handleSearch = (items, query) => {
+    const handleEnrolledCoursesSearch = (items, query) => {
+        if (!query) {
+            return items;
+        }
+        return items.filter(item => item.courseId.courseName.toLowerCase().includes(query.toLowerCase()));
+    };
+
+    const handleTakenTestsSearch = (items, query) => {
+        if (!query) {
+            return items;
+        }
+        return items.filter(item => item.testId.testName.toLowerCase().includes(query.toLowerCase()));
+    };
+
+    const handleCreatedCoursesSearch = (items, query) => {
+        if (!query) {
+            return items;
+        }
+        return items.filter(item => item.courseName.toLowerCase().includes(query.toLowerCase()));
+    };
+
+    const handleCreatedTestsSearch = (items, query) => {
+        if (!query) {
+            return items;
+        }
+        return items.filter(item => item.testName.toLowerCase().includes(query.toLowerCase()));
+    };
+
+    const handleUploadedFilesSearch = (items, query) => {
         if (!query) {
             return items;
         }
@@ -109,19 +137,19 @@ const Dashboard = () => {
         let itemsToDisplay = [];
         switch (activeTab) {
             case 'enrolledCourses':
-                itemsToDisplay = handleSearch(enrolledCourses, searchQuery).filter(course => course.completedLessons.length > 0);
+                itemsToDisplay = handleEnrolledCoursesSearch(enrolledCourses, searchQuery).filter(course => course.completedLessons.length > 0);
                 break;
             case 'takenTests':
-                itemsToDisplay = handleSearch(takenTests, searchQuery);
+                itemsToDisplay = handleTakenTestsSearch(takenTests, searchQuery);
                 break;
             case 'createdCourses':
-                itemsToDisplay = handleSearch(createdCourses, searchQuery);
+                itemsToDisplay = handleCreatedCoursesSearch(createdCourses, searchQuery);
                 break;
             case 'createdTests':
-                itemsToDisplay = handleSearch(createdTests, searchQuery);
+                itemsToDisplay = handleCreatedTestsSearch(createdTests, searchQuery);
                 break;
             case 'uploadedFiles':
-                itemsToDisplay = handleSearch(uploadedFiles, searchQuery);
+                itemsToDisplay = handleUploadedFilesSearch(uploadedFiles, searchQuery);
                 break;
             default:
                 itemsToDisplay = [];

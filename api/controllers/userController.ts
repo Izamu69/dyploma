@@ -228,5 +228,4 @@ const markLessonComplete = async (req: Request, res: Response) => {
   }
 };
 
-
 export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword, addTestResult, getUserInfo, markLessonComplete };
