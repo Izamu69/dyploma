@@ -39,10 +39,10 @@ const userSchema: Schema = new Schema(
       required: true,
       unique: true
     },
-    files: {
+    files: [{
       type: String,
       required: false,
-    },
+    }],
     testsTaken: [
       {
         testId: { type: Schema.Types.ObjectId, ref: "Test" },

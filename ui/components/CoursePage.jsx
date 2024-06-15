@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faBookOpen, faFileAlt, faClipboardList, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { CSSTransition } from 'react-transition-group';
+import TestSelectorModal from './TestSelectorModal';
 import './CoursePage.css';
 
 const CoursePage = () => {
@@ -13,6 +14,9 @@ const CoursePage = () => {
     const [isAuthor, setIsAuthor] = useState(false);
     const navigate = useNavigate();
     const [completedLessons, setCompletedLessons] = useState([]);
+    const [takenTests, setTakenTests] = useState([]);
+    const [availableTests, setAvailableTests] = useState([]);
+    const [isTestSelectorOpen, setIsTestSelectorOpen] = useState(false);
     const [userId, setUserId] = useState('');
 
     const [isLessonsOpen, setIsLessonsOpen] = useState(true);
@@ -62,6 +66,13 @@ const CoursePage = () => {
 
                 setCourse((prevCourse) => ({ ...prevCourse, lessons, tests }));
 
+                const availableTestsResponse = await fetch(`http://localhost:3000/tests?authorId=${userId}`);
+                if (!availableTestsResponse.ok) {
+                    throw new Error('Failed to fetch available tests');
+                }
+                const availableTestsData = await availableTestsResponse.json();
+                setAvailableTests(availableTestsData.tests);
+
                 setLoading(false);
 
                 if (userId) {
@@ -84,6 +95,24 @@ const CoursePage = () => {
         fetchCourseData();
     }, [courseId, userId]);
 
+    useEffect(() => {
+        if (userId) {
+            fetch(`http://localhost:3000/users/${userId}/info`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.user) {
+                        setTakenTests(Array.isArray(data.user.testsTaken) ? data.user.testsTaken : []);
+                    }
+                })
+                .catch(error => console.error('Error fetching user info:', error));
+        }
+    }, [userId]);
+
     const isLessonCompleted = (lessonId) => {
         return completedLessons.includes(lessonId);
     };
@@ -100,16 +129,44 @@ const CoursePage = () => {
         navigate(`/course/${courseId}/createlesson`);
     };
 
-    const handleAddTest = () => {
-        navigate("/createtest");
-    };
-
     const handleEditLesson = (lesson) => {
         navigate(`/course/${courseId}/lesson/${lesson._id}/edit`);
     };
 
     const handleEditTest = (test) => {
         navigate(`/test/${test._id}/edit`);
+    };
+
+    const handleOpenTestSelector = () => {
+        setIsTestSelectorOpen(true);
+    };
+
+    const handleCloseTestSelector = () => {
+        setIsTestSelectorOpen(false);
+    };
+
+    const handleSelectTest = async (testId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/${courseId}/tests`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ testId }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add test to course');
+            }
+
+            const updatedCourse = await response.json();
+            console.log('Updated Course Tests:', updatedCourse);
+            setCourse((prevCourse) => ({ ...prevCourse, tests: updatedCourse.course.tests }));
+            setIsTestSelectorOpen(false);
+            window.location.reload();
+        } catch (error) {
+            console.error('Error adding test to course:', error);
+        }
     };
 
     return (
@@ -179,7 +236,7 @@ const CoursePage = () => {
                             >
                                 Tests
                                 {isAuthor && (
-                                    <button onClick={handleAddTest} className="text-gray-300 hover:text-gray-400">
+                                    <button onClick={handleOpenTestSelector} className="text-gray-300 hover:text-gray-400">
                                         <FontAwesomeIcon icon={faPlus} size="lg" />
                                     </button>
                                 )}
@@ -193,30 +250,39 @@ const CoursePage = () => {
                                     nodeRef={testsRef}
                                 >
                                     <div className="bg-gray-800 p-4 rounded-lg" ref={testsRef}>
-                                        {course.tests.map((test, index) => (
-                                            <div key={index} className="flex justify-between items-center mb-2">
-                                                <Link to={`/test/${test._id}`} className="flex-grow text-left">
-                                                    <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                        {course.tests.map((test, index) => {
+                                            const isTestCompleted = takenTests.some(takenTest => takenTest.testId._id === test._id);
+                                            const grade = isTestCompleted ? takenTests.find(takenTest => takenTest.testId._id === test._id).grade : null;
+
+                                            return (
+                                                <div key={index} className="flex justify-between items-center mb-2">
+                                                    <Link to={`/test/${test._id}`} className="flex-grow text-left">
+                                                        <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                                            <FontAwesomeIcon
+                                                                icon={faClipboardList}
+                                                                size="lg"
+                                                                className="text-gray-600"
+                                                            />{' '}
+                                                            {test.testName}
+                                                        </button>
+                                                    </Link>
+                                                    {isAuthor && (
+                                                        <button onClick={() => handleEditTest(test)} className="text-gray-300 hover:text-gray-400">
+                                                            <FontAwesomeIcon icon={faEdit} size="lg" />
+                                                        </button>
+                                                    )}
+                                                    {isTestCompleted ? (
+                                                        <span className="ml-2 text-teal-600 text-xl">{grade}</span>
+                                                    ) : (
                                                         <FontAwesomeIcon
-                                                            icon={faClipboardList}
-                                                            size="lg"
-                                                            className="text-gray-600"
-                                                        />{' '}
-                                                        {test.testName}
-                                                    </button>
-                                                </Link>
-                                                {isAuthor && (
-                                                    <button onClick={() => handleEditTest(test)} className="text-gray-300 hover:text-gray-400">
-                                                        <FontAwesomeIcon icon={faEdit} size="lg" />
-                                                    </button>
-                                                )}
-                                                <FontAwesomeIcon
-                                                    icon={faCheckCircle}
-                                                    className='ml-2 text-gray-500'
-                                                    size="2x"
-                                                />
-                                            </div>
-                                        ))}
+                                                            icon={faCheckCircle}
+                                                            className='ml-2 text-gray-500'
+                                                            size="2x"
+                                                        />
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </CSSTransition>
                             )}
@@ -260,6 +326,13 @@ const CoursePage = () => {
                         </div>
                     </div>
                 </>
+            )}
+            {isTestSelectorOpen && (
+                <TestSelectorModal
+                    availableTests={availableTests}
+                    onClose={handleCloseTestSelector}
+                    onSelectTest={handleSelectTest}
+                />
             )}
         </div>
     );

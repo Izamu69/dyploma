@@ -228,4 +228,23 @@ const markLessonComplete = async (req: Request, res: Response) => {
   }
 };
 
-export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword, addTestResult, getUserInfo, markLessonComplete };
+const uploadFile = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const filePath = req.file.path;
+    user.files?.push(filePath);
+    await user.save();
+    res.status(200).json({ message: "File uploaded successfully", filePath });
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).json({ message: "Error uploading file" });
+  }
+};
+
+export { getUsers, createUser, updateUser, deleteUser, patchUser, loginUser, checkPassword, addTestResult, getUserInfo, markLessonComplete, uploadFile };

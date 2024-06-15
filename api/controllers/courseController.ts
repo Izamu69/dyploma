@@ -127,4 +127,26 @@ const addLessonToCourse = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-export { getCourses, createCourse, updateCourse, deleteCourse, patchCourse, getCourseById, addLessonToCourse };
+const addTestToCourse = async (req: Request, res: Response): Promise<void> => {
+  const courseId = req.params.id;
+  const testId = req.body.testId;
+
+  try {
+    const updatedCourse: ICourse | null = await Course.findByIdAndUpdate(
+      courseId,
+      { $push: { testIds: testId } },
+      { new: true }
+    );
+
+    if (!updatedCourse) {
+      res.status(404).json({ success: false, message: 'Course not found' });
+      return;
+    }
+
+    res.status(200).json({ success: true, course: updatedCourse });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error updating course', error: error });
+  }
+};
+
+export { getCourses, createCourse, updateCourse, deleteCourse, patchCourse, getCourseById, addLessonToCourse, addTestToCourse };

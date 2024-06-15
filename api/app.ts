@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import helmet from "helmet";
+import { resolve } from "path";
 import userRoutes from "./routes/userRoute";
 import questionRoutes from "./routes/questionRoute";
 import testRoutes from "./routes/testRoute";
@@ -31,6 +32,9 @@ const allowCrossOrigin = (req: Request, res: Response, next: NextFunction) => {
 
 app.use(express.json());
 app.use(allowCrossOrigin);
+
+app.use("/uploads", express.static(resolve(__dirname, "uploads")));
+
 app.use(userRoutes);
 app.use(questionRoutes);
 app.use(testRoutes);

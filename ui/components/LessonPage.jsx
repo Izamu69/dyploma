@@ -9,6 +9,7 @@ const LessonPage = () => {
     const { courseId, lessonId } = useParams();
     const [lesson, setLesson] = useState(null);
     const [tests, setTests] = useState([]);
+    const [takenTests, setTakenTests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isTestsOpen, setIsTestsOpen] = useState(false);
@@ -66,7 +67,9 @@ const LessonPage = () => {
                 })
                 .then(data => {
                     console.log(data.user.enrolledCourses);
-
+                    if (data.user) {
+                        setTakenTests(Array.isArray(data.user.testsTaken) ? data.user.testsTaken : []);
+                    }
                     if (data && data.user && data.user.enrolledCourses) {
                         const completedLessons = data.user.enrolledCourses.reduce((acc, course) => {
                             return acc.concat(course.completedLessons);
@@ -153,25 +156,34 @@ const LessonPage = () => {
                                 nodeRef={testsRef}
                             >
                                 <div className="p-4" ref={testsRef}>
-                                    {tests.map((test, index) => (
-                                        <div key={index} className="flex justify-between items-center mb-2">
-                                            <Link to={`/test/${test._id}`} className="flex-grow text-left">
-                                                <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    {tests.map((test, index) => {
+                                        const isTestCompleted = takenTests.some(takenTest => takenTest.testId._id === test._id);
+                                        const grade = isTestCompleted ? takenTests.find(takenTest => takenTest.testId._id === test._id).grade : null;
+
+                                        return (
+                                            <div key={index} className="flex justify-between items-center mb-2">
+                                                <Link to={`/test/${test._id}`} className="flex-grow text-left">
+                                                    <button className="w-full text-left text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                                        <FontAwesomeIcon
+                                                            icon={faClipboardList}
+                                                            size="lg"
+                                                            className="text-gray-600"
+                                                        />{' '}
+                                                        {test.testName}
+                                                    </button>
+                                                </Link>
+                                                {isTestCompleted ? (
+                                                    <span className="ml-2 text-teal-600 text-xl">{grade}</span>
+                                                ) : (
                                                     <FontAwesomeIcon
-                                                        icon={faClipboardList}
-                                                        size="lg"
-                                                        className="text-gray-600"
-                                                    />{' '}
-                                                    {test.testName}
-                                                </button>
-                                            </Link>
-                                            <FontAwesomeIcon
-                                                icon={faCheckCircle}
-                                                className={`ml-2 ${test.completed ? 'text-teal-600' : 'text-gray-500'}`}
-                                                size="2x"
-                                            />
-                                        </div>
-                                    ))}
+                                                        icon={faCheckCircle}
+                                                        className='ml-2 text-gray-500'
+                                                        size="2x"
+                                                    />
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </CSSTransition>
                         </div>

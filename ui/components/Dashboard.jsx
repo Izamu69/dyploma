@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookOpen, faClipboardList, faTasks, faPlusCircle, faSearch, faFileUpload, faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './Dashboard.css';
 
 const Dashboard = () => {
+    const [file, setFile] = useState(null);
     const [activeTab, setActiveTab] = useState('enrolledCourses');
     const [enrolledCourses, setEnrolledCourses] = useState([]);
     const [takenTests, setTakenTests] = useState([]);
@@ -38,7 +40,7 @@ const Dashboard = () => {
                     if (data.user) {
                         setTakenTests(Array.isArray(data.user.testsTaken) ? data.user.testsTaken : []);
                         setEnrolledCourses(data.user.enrolledCourses || []);
-                        //setUploadedFiles(data.user.files);
+                        setUploadedFiles(data.user.files);
                     }
                 })
                 .catch(error => console.error('Error fetching user info:', error));
@@ -121,15 +123,25 @@ const Dashboard = () => {
         return items.filter(item => item.name.toLowerCase().includes(query.toLowerCase()));
     };
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const newFile = {
-                id: uploadedFiles.length + 1,
-                name: file.name,
-                url: URL.createObjectURL(file)
-            };
-            setUploadedFiles([...uploadedFiles, newFile]);
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
+
+    const handleFileUpload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await axios.post(`http://localhost:3000/users/${userId}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            console.log(response.data);
+            setUploadedFiles([...uploadedFiles, response.data.file]);
+        } catch (error) {
+            console.error('Error uploading file:', error);
         }
     };
 
@@ -222,12 +234,13 @@ const Dashboard = () => {
                 return (
                     <div className="bg-gray-800 p-6 rounded-lg mb-8">
                         <div className="mb-4">
-                            <input type="file" id="fileUpload" onChange={handleFileUpload} className="bg-gray-900 text-gray-300 rounded-lg p-2 w-full" />
+                            <input type="file" id="fileUpload" onChange={handleFileChange} className="bg-gray-900 text-gray-300 rounded-lg p-2 w-full" />
+                            <button onClick={handleFileUpload} className="bg-teal-600 text-gray-300 rounded-lg p-2 mt-2 w-full font-bold">Upload</button>
                         </div>
-                        {itemsToDisplay.map(file => (
-                            <div key={file.id} className="mb-2">
-                                <a href={file.url} target="_blank" rel="noopener noreferrer" className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
-                                    <FontAwesomeIcon icon={faFileUpload} size='lg' className="text-teal-600 mr-2" /> {file.name}
+                        {itemsToDisplay.map((file, index) => (
+                            <div key={index} className="mb-2">
+                                <a href={`http://localhost:3000/${file}`} target="_blank" rel="noopener noreferrer" className="flex items-center text-lg bg-transparent p-4 m-0 border-none text-gray-300 hover:bg-gray-700 hover:rounded-lg">
+                                    <FontAwesomeIcon icon={faFileUpload} size='lg' className="text-teal-600 mr-2" /> File {index + 1}
                                 </a>
                             </div>
                         ))}
